@@ -1,0 +1,176 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Font Family */
+* {
+    font-family: 'Poppins', sans-serif !important;
+}
+
+/* ==================== SIDEBAR ==================== */
+/* Sidebar Background - Dark Gradient */
+.fi-sidebar {
+    background: linear-gradient(180deg, #1F2937 0%, #111827 100%) !important;
+}
+
+/* Sidebar Navigation Items */
+.fi-sidebar-item {
+    border-radius: 8px !important;
+    margin: 4px 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Sidebar Item Hover */
+.fi-sidebar-item:hover {
+    background: linear-gradient(90deg, #EAB308 0%, #CA8A04 100%) !important;
+}
+
+.fi-sidebar-item:hover .fi-sidebar-item-label,
+.fi-sidebar-item:hover .fi-sidebar-item-icon {
+    color: white !important;
+}
+
+/* Sidebar Item Active */
+.fi-sidebar-item-active {
+    background: linear-gradient(90deg, #EAB308 0%, #CA8A04 100%) !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-label,
+.fi-sidebar-item-active .fi-sidebar-item-icon {
+    color: white !important;
+}
+
+/* Sidebar Group Label */
+.fi-sidebar-group-label {
+    color: #EAB308 !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Sidebar Header (Logo Area) */
+.fi-sidebar-header {
+    background: linear-gradient(180deg, #1F2937 0%, #111827 100%) !important;
+    border-bottom: 2px solid #EAB308 !important;
+    padding: 1.5rem !important;
+}
+
+/* Logo */
+.fi-logo {
+    filter: drop-shadow(0 4px 6px rgba(234, 179, 8, 0.3)) !important;
+}
+
+/* Brand Name */
+.fi-sidebar-header .fi-logo-text {
+    color: #EAB308 !important;
+    font-weight: 700 !important;
+    font-size: 1.25rem !important;
+}
+
+/* Sidebar Scrollbar */
+.fi-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.fi-sidebar::-webkit-scrollbar-track {
+    background: #111827;
+}
+
+.fi-sidebar::-webkit-scrollbar-thumb {
+    background: #EAB308;
+    border-radius: 4px;
+}
+
+.fi-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #CA8A04;
+}
+
+
+/* ==================== TOPBAR ==================== */
+/* Topbar Background - Yellow Gradient */
+.fi-topbar {
+    background: linear-gradient(90deg, #EAB308 0%, #CA8A04 50%, #854D0E 100%) !important;
+    border-bottom: none !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Topbar Navigation Items */
+.fi-topbar nav,
+.fi-topbar .fi-breadcrumbs {
+    color: white !important;
+}
+
+.fi-breadcrumbs-item a {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: color 0.3s ease !important;
+}
+
+.fi-breadcrumbs-item a:hover {
+    color: white !important;
+}
+
+.fi-breadcrumbs-item-active {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Topbar Icons & Buttons */
+.fi-topbar button,
+.fi-topbar a {
+    color: white !important;
+}
+
+.fi-topbar button:hover,
+.fi-topbar a:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+/* User Menu in Topbar */
+.fi-user-menu-button {
+    color: white !important;
+}
+
+.fi-user-menu-button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Search Bar in Topbar (if exists) */
+.fi-topbar input {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+}
+
+.fi-topbar input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.fi-topbar input:focus {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-color: white !important;
+}
+
+
+/* ==================== BONUS: Primary Buttons ==================== */
+/* Primary Button Styling (matching theme) */
+.fi-btn-primary {
+    background: linear-gradient(135deg, #EAB308 0%, #CA8A04 100%) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 4px 6px rgba(234, 179, 8, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.fi-btn-primary:hover {
+    background: linear-gradient(135deg, #CA8A04 0%, #854D0E 100%) !important;
+    box-shadow: 0 6px 8px rgba(234, 179, 8, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+
+/* ==================== BONUS: Table Hover ==================== */
+.fi-ta-row:hover {
+    background-color: #fef9c3 !important;
+}

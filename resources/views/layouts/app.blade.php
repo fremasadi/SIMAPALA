@@ -7,23 +7,32 @@
 
     <title>@yield('title', 'Mapala Senja - Polinema Kediri')</title>
     <script src="https://cdn.tailwindcss.com"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
         }
         .gradient-bg {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: linear-gradient(135deg, #EAB308 0%, #CA8A04 50%, #854D0E 100%);
+        }
+        .gradient-bg-dark {
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
         }
         .section-title::after {
             content: '';
             display: block;
             width: 80px;
             height: 4px;
-            background: #f59e0b;
+            background: #EAB308;
             margin: 12px auto 0;
+        }
+        .logo-shadow {
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
     </style>
     @yield('styles')

@@ -29,17 +29,15 @@
             </div>
         @endif
 
-        {{-- Validation Errors --}}
-        @if($errors->any())
-            <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                <p class="font-semibold mb-2">Terdapat kesalahan:</p>
-                <ul class="list-disc list-inside text-sm">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+        {{-- Validation/Calculation Error --}}
+        @isset($error)
+            <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                {{ $error }}
             </div>
-        @endif
+        @endisset
 
         @if(count($cart) == 0)
             {{-- Empty Cart --}}
@@ -49,9 +47,12 @@
                 </svg>
                 <h3 class="text-2xl font-bold text-gray-700 mb-3">Keranjang Kosong</h3>
                 <p class="text-gray-500 mb-6">Belum ada alat yang ditambahkan ke keranjang</p>
-                <a href="/#equipment" class="inline-block px-8 py-3 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition font-semibold">
+                <a href="/#equipment"
+                class="inline-block px-8 py-3 text-white rounded-lg transition font-semibold"
+                style="background-color:#EAB308;">
                     Lihat Daftar Alat
                 </a>
+
             </div>
         @else
             {{-- Cart Items & Calculation --}}
@@ -103,25 +104,24 @@
                         </div>
                     </div>
 
-                    {{-- Calculation Form --}}
+                    {{-- Date Selection Form (Auto Calculate) --}}
                     <div class="bg-gradient-to-br from-amber-50 to-indigo-50 rounded-xl p-6 border-2 border-amber-100">
                         <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                             <svg class="w-6 h-6 mr-2 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            Hitung Total Penyewaan
+                            Pilih Tanggal Penyewaan
                         </h3>
 
-                        <form action="{{ route('cart.calculate') }}" method="POST">
-                            @csrf
-
-                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <form method="GET" action="{{ route('cart.index') }}" id="dateForm">
+                            <div class="grid md:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal Pinjam</label>
                                     <input type="date" 
                                            name="tanggal_pinjam" 
+                                           id="tanggal_pinjam"
                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition"
-                                           value="{{ old('tanggal_pinjam', $tanggal_pinjam ?? '') }}" 
+                                           value="{{ $tanggal_pinjam ?? '' }}" 
                                            min="{{ date('Y-m-d') }}"
                                            required>
                                 </div>
@@ -130,41 +130,35 @@
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal Kembali</label>
                                     <input type="date" 
                                            name="tanggal_kembali" 
+                                           id="tanggal_kembali"
                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition"
-                                           value="{{ old('tanggal_kembali', $tanggal_kembali ?? '') }}" 
+                                           value="{{ $tanggal_kembali ?? '' }}" 
                                            min="{{ date('Y-m-d', strtotime('+1 day')) }}"
                                            required>
                                 </div>
                             </div>
 
-                            <div class="bg-white rounded-lg p-4 mb-4 border-2 border-amber-200">
+                            <div class="bg-white rounded-lg p-4 border-2 border-amber-200">
                                 <div class="flex justify-between items-center">
                                     <span class="text-sm font-semibold text-gray-700">Total harga per hari:</span>
                                     <span class="text-lg font-bold text-gray-800">Rp {{ number_format($total_per_hari, 0, ',', '.') }}</span>
                                 </div>
                             </div>
-
-                            @isset($total_biaya)
-                            <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-6">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-sm font-semibold text-green-800">Total Biaya</p>
-                                        <p class="text-xs text-green-600">Durasi: {{ $durasi }} hari</p>
-                                    </div>
-                                    <span class="text-2xl font-bold text-green-700">
-                                        Rp {{ number_format($total_biaya, 0, ',', '.') }}
-                                    </span>
-                                </div>
-                            </div>
-                            @endisset
-
-                            <button type="submit" class="w-full bg-amber-500 text-white py-3 rounded-lg hover:bg-amber-700 transition font-semibold shadow-md flex items-center justify-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                </svg>
-                                Hitung Total
-                            </button>
                         </form>
+
+                        @isset($total_biaya, $durasi)
+                        <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4 mt-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-semibold text-green-800">Total Biaya</p>
+                                    <p class="text-xs text-green-600">Durasi: {{ $durasi }} hari</p>
+                                </div>
+                                <span class="text-2xl font-bold text-green-700">
+                                    Rp {{ number_format($total_biaya, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        </div>
+                        @endisset
                     </div>
                 </div>
 
@@ -184,33 +178,40 @@
                             </div>
                         </div>
 
-                        @isset($total_biaya)
-                        <div class="border-t-2 border-amber-300 pt-4 mb-6">
-                            <div class="bg-white rounded-lg p-4 border-2 border-amber-300">
-                                <div class="text-center">
-                                    <p class="text-sm text-gray-600 mb-1">Total Pembayaran</p>
-                                    <p class="text-3xl font-bold text-amber-600">
-                                        Rp {{ number_format($total_biaya, 0, ',', '.') }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 mt-1">untuk {{ $durasi }} hari</p>
+                        @isset($total_biaya, $tanggal_pinjam, $tanggal_kembali, $durasi)
+                            <div class="border-t-2 border-amber-300 pt-4 mb-6">
+                                <div class="bg-white rounded-lg p-4 border-2 border-amber-300">
+                                    <div class="text-center">
+                                        <p class="text-sm text-gray-600 mb-1">Total Pembayaran</p>
+                                        <p class="text-3xl font-bold text-amber-600">
+                                            Rp {{ number_format($total_biaya, 0, ',', '.') }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-1">untuk {{ $durasi }} hari</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <form action="{{ route('cart.checkout') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="tanggal_pinjam" value="{{ $tanggal_pinjam }}">
-                            <input type="hidden" name="tanggal_kembali" value="{{ $tanggal_kembali }}">
-                            <input type="hidden" name="total_biaya" value="{{ $total_biaya }}">
-                            
-                            <button type="submit" 
-                                    class="w-full bg-amber-500 text-white py-3 rounded-lg hover:bg-amber-600 transition font-semibold mb-3 shadow-md">
-                                <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                                </svg>
-                                Proses Pemesanan
-                            </button>
-                        </form>
+                            {{-- Checkout Payment Form --}}
+                            <form action="{{ route('cart.checkout') }}" method="POST" id="checkoutForm">
+                                @csrf
+                                <input type="hidden" name="tanggal_pinjam" value="{{ $tanggal_pinjam }}">
+                                <input type="hidden" name="tanggal_kembali" value="{{ $tanggal_kembali }}">
+                                <input type="hidden" name="total_biaya" value="{{ $total_biaya }}">
+                                
+                                <button type="submit" 
+                                        class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-4 rounded-lg hover:from-amber-600 hover:to-orange-600 transition font-bold shadow-lg mb-3">
+                                    <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                    </svg>
+                                    Lanjutkan Pembayaran
+                                </button>
+                            </form>
+                        @else
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+                                <p class="text-sm text-yellow-800 font-semibold">
+                                    ⚠️ Silakan pilih tanggal penyewaan
+                                </p>
+                            </div>
                         @endisset
 
                         <a href="/#equipment" class="block text-center mt-4 text-amber-600 hover:text-amber-700 font-medium">
@@ -222,5 +223,26 @@
         @endif
     </div>
 </section>
+
+{{-- Auto Submit on Date Change --}}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tanggalPinjam = document.getElementById('tanggal_pinjam');
+    const tanggalKembali = document.getElementById('tanggal_kembali');
+    const dateForm = document.getElementById('dateForm');
+    
+    if (tanggalPinjam && tanggalKembali && dateForm) {
+        // Auto submit ketika kedua tanggal sudah diisi
+        function autoSubmit() {
+            if (tanggalPinjam.value && tanggalKembali.value) {
+                dateForm.submit();
+            }
+        }
+        
+        tanggalPinjam.addEventListener('change', autoSubmit);
+        tanggalKembali.addEventListener('change', autoSubmit);
+    }
+});
+</script>
 
 @endsection

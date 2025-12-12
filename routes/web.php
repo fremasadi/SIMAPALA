@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\TransactionController;
+
+
 use Illuminate\Support\Facades\Route;
 use App\Models\Alat;
 
@@ -45,38 +48,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('/add', [CartController::class, 'add'])->name('add');
         Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('remove');
-        Route::post('/calculate', [CartController::class, 'calculate'])->name('calculate');
         Route::post('/checkout', [CartController::class, 'checkout'])->name('checkout');
+
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Payment Routes (Authenticated)
-    |--------------------------------------------------------------------------
-    */
-    
-    Route::prefix('payment')->name('payment.')->group(function () {
-        Route::get('/create/{transaksi}', [PaymentController::class, 'createPayment'])->name('create');
-        Route::get('/{pembayaran}', [PaymentController::class, 'show'])->name('show');
-        Route::get('/{pembayaran}/result', [PaymentController::class, 'result'])->name('result');
-        Route::get('/{pembayaran}/check-status', [PaymentController::class, 'checkStatus'])->name('check-status');
-        Route::post('/{pembayaran}/cancel', [PaymentController::class, 'cancel'])->name('cancel');
-    });
 
-    Route::get('/payment/get-redirect-url/{pembayaran}', [PaymentController::class, 'getRedirectUrl'])
-        ->name('payment.getRedirectUrl');
+    // Payment
+    Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
+    Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('payment.show');
+    Route::get('/payment/check/{id}', [PaymentController::class, 'checkStatus'])->name('payment.check');
+
+    // Transaction History
+    Route::get('/my-transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/my-transactions/{id}', [TransactionController::class, 'show'])->name('transactions.show');
+    Route::post('/my-transactions/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
+   
 });
 
-/*
-|--------------------------------------------------------------------------
-| Midtrans Callback Routes (Public - No Auth Required)
-|--------------------------------------------------------------------------
-*/
-
-Route::prefix('payment')->name('payment.')->group(function () {
-    Route::post('/notification', [PaymentController::class, 'notification'])->name('notification');
-    Route::get('/finish', [PaymentController::class, 'finish'])->name('finish');
-});
+Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
 
 /*
 |--------------------------------------------------------------------------

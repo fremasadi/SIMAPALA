@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
 class Pembayaran extends Model
 {
+    use HasFactory;
+
     protected $table = 'pembayarans';
 
     protected $fillable = [
@@ -33,27 +37,102 @@ class Pembayaran extends Model
         'settlement_time' => 'datetime',
     ];
 
+    /**
+     * Relationship: Pembayaran belongs to Booking
+     */
     // Relasi ke transaksi
     public function transaksi(): BelongsTo
     {
         return $this->belongsTo(TransaksiAlat::class, 'transaksi_id');
     }
 
-    // Check if payment is successful
-    public function isSuccessful(): bool
+    /**
+     * Check if payment is successful (settlement or capture)
+     */
+    public function isSuccess()
     {
         return in_array($this->transaction_status, ['settlement', 'capture']);
     }
 
-    // Check if payment is pending
-    public function isPending(): bool
+    /**
+     * Check if payment is pending
+     */
+    public function isPending()
     {
         return $this->transaction_status === 'pending';
     }
 
-    // Check if payment is failed
-    public function isFailed(): bool
+    /**
+     * Check if payment is failed
+     */
+    public function isFailed()
     {
-        return in_array($this->transaction_status, ['deny', 'cancel', 'expire', 'failure']);
+        return in_array($this->transaction_status, ['deny', 'expire', 'cancel', 'failure']);
+    }
+
+    /**
+     * Get readable status label
+     */
+    public function getStatusLabel()
+    {
+        $labels = [
+            'pending' => 'Menunggu Pembayaran',
+            'settlement' => 'Pembayaran Berhasil',
+            'capture' => 'Pembayaran Berhasil',
+            'deny' => 'Pembayaran Ditolak',
+            'expire' => 'Pembayaran Kadaluarsa',
+            'cancel' => 'Pembayaran Dibatalkan',
+            'failure' => 'Pembayaran Gagal',
+        ];
+
+        return $labels[$this->transaction_status] ?? 'Status Tidak Diketahui';
+    }
+
+    /**
+     * Get status badge color class
+     */
+    public function getStatusBadgeClass()
+    {
+        $classes = [
+            'pending' => 'bg-yellow-100 text-yellow-800',
+            'settlement' => 'bg-green-100 text-green-800',
+            'capture' => 'bg-green-100 text-green-800',
+            'deny' => 'bg-red-100 text-red-800',
+            'expire' => 'bg-gray-100 text-gray-800',
+            'cancel' => 'bg-red-100 text-red-800',
+            'failure' => 'bg-red-100 text-red-800',
+        ];
+
+        return $classes[$this->transaction_status] ?? 'bg-gray-100 text-gray-800';
+    }
+
+    /**
+     * Get payment method label
+     */
+    public function getPaymentMethodLabel()
+    {
+        if (!$this->payment_type) {
+            return '-';
+        }
+
+        $labels = [
+            'credit_card' => 'Kartu Kredit',
+            'bank_transfer' => strtoupper($this->bank ?? '') . ' Virtual Account',
+            'echannel' => 'Mandiri Bill',
+            'gopay' => 'GoPay',
+            'qris' => 'QRIS',
+            'shopeepay' => 'ShopeePay',
+            'other' => 'Lainnya',
+        ];
+
+        return $labels[$this->payment_type] ?? ucfirst($this->payment_type);
+    }
+
+    /**
+     * Format gross amount with currency
+     */
+    public function getFormattedAmountAttribute()
+    {
+        return 'Rp ' . number_format($this->gross_amount, 0, ',', '.');
     }
 }
