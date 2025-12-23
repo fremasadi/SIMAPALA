@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\LogPemeriksaans\Tables;
+namespace App\Filament\Resources\KasBulanans\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -8,30 +8,24 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class LogPemeriksaansTable
+class KasBulanansTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('detail_transaksi_id')
+                TextColumn::make('user.name')
+                    ->searchable(),
+                TextColumn::make('bulan')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('alat_id')
+                TextColumn::make('tahun')
+                    ->sortable(),
+                TextColumn::make('nominal')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('kondisi_sebelum')
+                TextColumn::make('status')
                     ->badge(),
-                TextColumn::make('kondisi_sesudah')
-                    ->badge(),
-                TextColumn::make('tindakan')
-                    ->badge(),
-                TextColumn::make('tanggal_pemeriksaan')
-                    ->dateTime()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

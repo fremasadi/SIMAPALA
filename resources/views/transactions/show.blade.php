@@ -7,7 +7,7 @@
 <!-- Transaction Detail Content -->
 <section class="py-28 bg-gradient-to-br from-gray-50 to-amber-50 min-h-screen">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {{-- Back Button --}}
         <a href="{{ route('transactions.index') }}" class="inline-flex items-center text-amber-600 hover:text-amber-700 font-semibold mb-6 transition">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,7 +49,7 @@
                     </div>
 
                     @if($transaction->status === 'menunggu_pembayaran' && $transaction->pembayaran)
-                        <a href="{{ route('payment.show', $transaction->pembayaran->id) }}" 
+                        <a href="{{ route('payment.show', $transaction->pembayaran->id) }}"
                            class="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-semibold shadow-md">
                             <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
@@ -64,7 +64,7 @@
         <div class="grid lg:grid-cols-3 gap-6">
             {{-- Main Content --}}
             <div class="lg:col-span-2 space-y-6">
-                
+
                 {{-- Rental Period Info --}}
                 <div class="bg-white rounded-2xl shadow-lg p-6 border-2 border-gray-100">
                     <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
@@ -122,7 +122,15 @@
                                             Dikembalikan: {{ ucfirst($detail->kondisi_kembali) }}
                                         </span>
                                     @endif
+                                    @if($detail->denda != 0)
+                                        <p>
+                                            Anda Memiliki dengan {{ucfirst($detail->denda)}}
+                                        </p>
+                                    @endif
                                 </div>
+                                <Div>
+
+                                </Div>
                             </div>
                             <div class="text-right">
                                 <p class="font-bold text-amber-600">Rp {{ number_format($detail->alat->harga_sewa, 0, ',', '.') }}</p>
@@ -175,7 +183,7 @@
                     </div>
 
                     @if($transaction->pembayaran->isPending())
-                        <a href="{{ route('payment.show', $transaction->pembayaran->id) }}" 
+                        <a href="{{ route('payment.show', $transaction->pembayaran->id) }}"
                            class="block mt-4 w-full text-center px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg hover:from-amber-600 hover:to-orange-600 transition font-bold shadow-md">
                             Lihat Detail Pembayaran
                         </a>
@@ -188,7 +196,7 @@
             <div class="lg:col-span-1">
                 <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-24 border-2 border-amber-200">
                     <h2 class="text-xl font-bold text-gray-800 mb-6">Ringkasan Biaya</h2>
-                    
+
                     <div class="space-y-4 mb-6">
                         <div class="flex justify-between text-gray-700">
                             <span class="font-medium">Jumlah Alat</span>
@@ -198,7 +206,7 @@
                             <span class="font-medium">Durasi</span>
                             <span class="font-bold text-amber-600">{{ $transaction->tanggal_pinjam->diffInDays($transaction->tanggal_kembali) }} hari</span>
                         </div>
-                        
+
                         <div class="border-t-2 border-gray-100 pt-4">
                             <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border-2 border-amber-200">
                                 <p class="text-sm text-gray-600 mb-2 text-center font-medium">Total Pembayaran</p>
@@ -212,7 +220,7 @@
                     {{-- Action Buttons --}}
                     @if($transaction->status === 'menunggu')
                         @if($transaction->pembayaran)
-                            <a href="{{ $transaction->pembayaran->payment_url }}" 
+                            <a href="{{ $transaction->pembayaran->payment_url }}"
                                class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition font-bold text-center shadow-lg mb-3">
                                 <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
@@ -223,7 +231,7 @@
 
                         <form action="{{ route('transactions.cancel', $transaction->id) }}" method="POST">
                             @csrf
-                            <button type="submit" 
+                            <button type="submit"
                                     onclick="return confirm('Yakin ingin membatalkan transaksi ini?')"
                                     class="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition font-bold text-center">
                                 <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

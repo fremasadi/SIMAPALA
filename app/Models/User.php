@@ -51,8 +51,18 @@ class User extends Authenticatable
     }
 
     public function anggota()
-{
+    {
     return $this->hasOne(Anggota::class, 'user_id');
-}
+    }
+    public function kasBulanans()
+    {
+        return $this->hasMany(KasBulanan::class);
+    }
+
+    public function kasPembayarans()
+    {
+        return $this->hasMany(KasPembayaran::class);
+    }
+
 
 }

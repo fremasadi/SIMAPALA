@@ -13,12 +13,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DetailTransaksiResource extends Resource
 {
     protected static ?string $model = DetailTransaksi::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static UnitEnum|string|null $navigationGroup = 'Transaksi';
+    protected static ?string $navigationLabel = 'Detail Transaksi Alat';
 
     public static function form(Schema $schema): Schema
     {

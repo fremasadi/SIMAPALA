@@ -15,6 +15,9 @@ class DetailTransaksi extends Model
         'transaksi_id',
         'alat_id',
         'kondisi_kembali',
+        'denda',
+        'keterangan',
+        'foto_kembali'
     ];
 
     // Relasi ke transaksi
