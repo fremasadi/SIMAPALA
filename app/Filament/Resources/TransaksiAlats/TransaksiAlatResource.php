@@ -23,7 +23,7 @@ class TransaksiAlatResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard';
     protected static UnitEnum|string|null $navigationGroup = 'Transaksi';
     protected static ?string $navigationLabel = 'Daftar Transaksi Alat';
-    // protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {
