@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
+use Illuminate\Database\Eloquent\Builder;
 
 class TransaksiAlatResource extends Resource
 {
@@ -22,6 +23,7 @@ class TransaksiAlatResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard';
     protected static UnitEnum|string|null $navigationGroup = 'Transaksi';
     protected static ?string $navigationLabel = 'Daftar Transaksi Alat';
+    // protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {
@@ -36,15 +38,19 @@ class TransaksiAlatResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
-        ];
+                //
+            ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withCount('detailTransaksis');
     }
 
     public static function getPages(): array
     {
         return [
             'index' => ListTransaksiAlats::route('/'),
-            // 'create' => CreateTransaksiAlat::route('/create'),
             'edit' => EditTransaksiAlat::route('/{record}/edit'),
         ];
     }

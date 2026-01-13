@@ -15,12 +15,15 @@ class AlatsTable
         return $table
             ->columns([
                 TextColumn::make('kode_alat')
+                    ->label('Kode Alat')
                     ->searchable(),
                 TextColumn::make('nama_alat')
+                    ->label('Nama Alat')
                     ->searchable(),
                 TextColumn::make('status')
                     ->badge(),
                 TextColumn::make('harga_sewa')
+                    ->label('Harga Sewa')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')

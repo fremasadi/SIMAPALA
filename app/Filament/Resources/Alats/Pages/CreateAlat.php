@@ -8,4 +8,11 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAlat extends CreateRecord
 {
     protected static string $resource = AlatResource::class;
+    protected static bool $canCreateAnother = false;
+
+
+    protected function getRedirectUrl(): string
+    {
+        return static::$resource::getUrl('index');
+    }
 }

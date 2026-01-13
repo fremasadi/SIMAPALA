@@ -15,11 +15,11 @@ class AnggotaForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Nama User')
+                    ->label('Nama Anggota')
                     ->required(),
 
                 TextInput::make('email')
-                    ->label('Email User')
+                    ->label('Email')
                     ->email()
                     ->required(),
 

@@ -15,12 +15,13 @@ class UserForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nama Lengkap')
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email address')
+                    ->label('Email ')
                     ->email()
                     ->required(),
-                DateTimePicker::make('email_verified_at'),
+                // DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
                     ->required(),
@@ -29,8 +30,10 @@ class UserForm
                     ->default('anggota')
                     ->required(),
                 TextInput::make('no_hp')
+                    ->label('Nomer Telefon')
                     ->default(null),
                 Textarea::make('alamat')
+                    ->label('Alamat')
                     ->default(null)
                     ->columnSpanFull(),
             ]);

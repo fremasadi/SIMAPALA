@@ -22,30 +22,37 @@ class PembayaransTable
                 // TextColumn::make('transaction_id')
                 //     ->searchable(),
                 TextColumn::make('gross_amount')
+                    ->label('Total harga')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('payment_type')
+                    ->label('Metode Pembayaran')
                     ->badge(),
                 TextColumn::make('bank')
+                    ->label('Nama Bank')
                     ->searchable(),
                 TextColumn::make('va_number')
+                    ->label('Va Number')
                     ->searchable(),
                 TextColumn::make('transaction_status')
+                    ->label('Status Transaksi')
                     ->badge(),
                 TextColumn::make('transaction_time')
+                    ->label('Waktu Transaksi')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('settlement_time')
+                    ->label('Waktu Dibayar')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                    // ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    // ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

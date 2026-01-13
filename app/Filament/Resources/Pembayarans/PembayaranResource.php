@@ -22,6 +22,7 @@ class PembayaranResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
     protected static UnitEnum|string|null $navigationGroup = 'Transaksi';
     protected static ?string $navigationLabel = 'Pembayaran Transaksi';
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {

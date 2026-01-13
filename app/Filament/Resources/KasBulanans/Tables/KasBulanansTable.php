@@ -15,13 +15,17 @@ class KasBulanansTable
         return $table
             ->columns([
                 TextColumn::make('user.name')
+                    ->label('Nama Anggota')
                     ->searchable(),
                 TextColumn::make('bulan')
+                    ->label('Bulan ke')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('tahun')
+                    ->label('Tahun ke')
                     ->sortable(),
                 TextColumn::make('nominal')
+                    ->label('Nominal')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('status')

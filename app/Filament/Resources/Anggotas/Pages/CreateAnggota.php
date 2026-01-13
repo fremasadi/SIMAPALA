@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Hash;
 class CreateAnggota extends CreateRecord
 {
     protected static string $resource = AnggotaResource::class;
+    protected static bool $canCreateAnother = false;
+
+
+    protected function getRedirectUrl(): string
+    {
+        return static::$resource::getUrl('index');
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

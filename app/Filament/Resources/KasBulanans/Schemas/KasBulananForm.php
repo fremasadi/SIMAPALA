@@ -14,6 +14,7 @@ class KasBulananForm
             ->components([
                 Select::make('user_id')
                     ->relationship('user', 'name')
+                    ->label('Nama Anggota')
                     ->required(),
                 TextInput::make('bulan')
                     ->required()

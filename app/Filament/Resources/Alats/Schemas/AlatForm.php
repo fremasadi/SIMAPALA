@@ -13,14 +13,17 @@ class AlatForm
         return $schema
             ->components([
                 TextInput::make('kode_alat')
+                    ->label('Kode Alat')
                     ->required(),
                 TextInput::make('nama_alat')
+                    ->label('Nama Alat')
                     ->required(),
                 Select::make('status')
                     ->options(['tersedia' => 'Tersedia', 'dipinjam' => 'Dipinjam', 'rusak' => 'Rusak', 'hilang' => 'Hilang'])
                     ->default('tersedia')
                     ->required(),
                 TextInput::make('harga_sewa')
+                    ->label('Harga Sewa')
                     ->required()
                     ->numeric()
                     ->default(0),
