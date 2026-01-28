@@ -27,7 +27,7 @@ Route::get('/', function () {
 */
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    
+
     // Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -43,7 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     | Cart Routes
     |--------------------------------------------------------------------------
     */
-    
+
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('/add', [CartController::class, 'add'])->name('add');
@@ -62,10 +62,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::get('/my-transactions/{id}', [TransactionController::class, 'show'])->name('transactions.show');
     Route::post('/my-transactions/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
-   
+
 });
 
-Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+Route::post('/payment/calack', [PaymentController::class, 'callback'])->name('payment.callback');
 Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
 
 /*
