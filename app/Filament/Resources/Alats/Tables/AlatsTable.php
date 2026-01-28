@@ -20,6 +20,12 @@ class AlatsTable
                 TextColumn::make('nama_alat')
                     ->label('Nama Alat')
                     ->searchable(),
+                TextColumn::make('ukuran')
+                    ->label('Ukuran')
+                    ->searchable(),
+                TextColumn::make('bahan')
+                    ->label('Bahan')
+                    ->searchable(),
                 TextColumn::make('status')
                     ->badge(),
                 TextColumn::make('harga_sewa')

@@ -18,6 +18,10 @@ class AlatForm
                 TextInput::make('nama_alat')
                     ->label('Nama Alat')
                     ->required(),
+                TextInput::make('ukuran')
+                    ->label('Ukuran'),
+                TextInput::make('bahan')
+                    ->label('Bahan'),
                 Select::make('status')
                     ->options(['tersedia' => 'Tersedia', 'dipinjam' => 'Dipinjam', 'rusak' => 'Rusak', 'hilang' => 'Hilang'])
                     ->default('tersedia')
