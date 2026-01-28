@@ -65,7 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-Route::post('/payment/calack', [PaymentController::class, 'callback'])->name('payment.callback');
+Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
 
 /*
