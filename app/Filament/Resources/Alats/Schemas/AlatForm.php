@@ -31,6 +31,11 @@ class AlatForm
                     ->required()
                     ->numeric()
                     ->default(0),
+                    FileUpload::make('image')
+                    ->label('Gambar')
+                    ->image()
+                    ->directory('alats')
+                    ->imageEditor(),
             ]);
     }
 }

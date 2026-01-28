@@ -14,6 +14,9 @@ class AlatsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('image')
+                    ->label('Gambar')
+                    ->circular(),
                 TextColumn::make('kode_alat')
                     ->label('Kode Alat')
                     ->searchable(),

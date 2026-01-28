@@ -8,7 +8,7 @@ class Alat extends Model
 {
     protected $table = 'alats';
 
-    protected $fillable = ['kode_alat', 'nama_alat', 'ukuran', 'bahan', 'status', 'harga_sewa'];
+    protected $fillable = ['kode_alat', 'nama_alat', 'ukuran', 'bahan', 'status', 'harga_sewa', 'image'];
 
     protected $casts = [
         'harga_sewa' => 'float',
