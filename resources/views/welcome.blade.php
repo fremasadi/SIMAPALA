@@ -10,7 +10,7 @@
     <div class="absolute inset-0 opacity-10">
         <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 0l30 30-30 30L0 30z" fill="%23EAB308" fill-opacity="0.4"/></svg>'); background-size: 60px 60px;"></div>
     </div>
-    
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="grid md:grid-cols-2 gap-12 items-center">
             <div class="text-white">
@@ -19,7 +19,7 @@
                     <span class="text-yellow-400">PSDKU Polinema Kediri</span>
                 </h1>
                 <p class="text-xl mb-8 text-gray-200 leading-relaxed">
-                    Mahasiswa Pecinta Alam. 
+                    Mahasiswa Pecinta Alam.
                     Jelajahi alam, temukan petualangan, dan bergabunglah bersama kami!
                 </p>
                 <div class="flex space-x-4">
@@ -43,54 +43,102 @@
 <!-- About Section -->
 <section id="about" class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4 section-title">Tentang Kami</h2>
-        <p class="text-center text-gray-600 mb-16 max-w-2xl mx-auto">
-            Mengenal lebih dekat Mapala Senja PSDKU Polinema di Kota Kediri
+
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4 section-title">
+            Tentang Mapala Senja
+        </h2>
+
+        <p class="text-center text-gray-600 mb-16 max-w-3xl mx-auto">
+            Mapala Senja hadir bukan sekadar sebagai komunitas pendaki, tetapi sebagai
+            wadah pembentukan karakter, kepedulian sosial, dan kecintaan terhadap alam
+            melalui eksplorasi, pendidikan, dan aksi konservasi lingkungan.
         </p>
 
         <div class="grid md:grid-cols-3 gap-8">
+
             <!-- Sejarah -->
             <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-2 border-yellow-300">
                 <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-6">
                     <svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13
+                            C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13
+                            C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13
+                            C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Sejarah</h3>
+
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">
+                    Sejarah & Filosofi
+                </h3>
+
                 <p class="text-gray-700 leading-relaxed">
-                    Mapala Senja didirikan oleh sekelompok mahasiswa pecinta alam PSDKU Polinema Kediri yang memiliki semangat tinggi untuk menjelajahi dan melestarikan alam Indonesia. Sejak berdiri, kami telah melakukan berbagai ekspedisi dan kegiatan konservasi.
+                    Mahasiswa Pecinta Alam (Mapala) lahir pada era 1960–1970an sebagai
+                    bentuk pencarian ruang kebebasan mahasiswa ketika aktivitas politik di
+                    kampus dibatasi. Alam menjadi ruang belajar alternatif untuk mengenal
+                    masyarakat dan tanah air secara langsung.
+                </p>
+
+                <p class="text-gray-700 leading-relaxed mt-3">
+                    Mapala UI yang berdiri pada 12 Desember 1964 menjadi pelopor gerakan ini.
+                    Tokoh seperti Soe Hok Gie memandang bahwa patriotisme sejati lahir dari
+                    pengembaraan dan interaksi langsung dengan alam serta masyarakat,
+                    bukan sekadar slogan.
                 </p>
             </div>
 
-            <!-- Visi -->
+            <!-- Visi & Misi -->
             <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-2 border-yellow-300">
                 <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-6">
                     <svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5
+                            c4.478 0 8.268 2.943 9.542 7
+                            -1.274 4.057-5.064 7-9.542 7
+                            -4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Visi</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Menjadi organisasi mahasiswa pecinta alam yang unggul dalam eksplorasi, konservasi, dan pendidikan lingkungan, serta membentuk karakter mahasiswa yang tangguh, mandiri, dan peduli terhadap kelestarian alam Indonesia.
-                </p>
-            </div>
 
-            <!-- Misi -->
-            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-2 border-yellow-300">
-                <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Misi</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">
+                    Visi & Misi
+                </h3>
+
+                <p class="text-gray-700 mb-3 leading-relaxed">
+                    <strong>Visi:</strong> Mewujudkan anggota yang memiliki kesadaran dan
+                    kepedulian tinggi terhadap lingkungan, alam, serta masyarakat sosial.
+                </p>
+
                 <ul class="text-gray-700 leading-relaxed space-y-2">
-                    <li>• Melakukan ekspedisi dan penelitian alam</li>
-                    <li>• Menyelenggarakan pendidikan kepecintaalaman</li>
-                    <li>• Melakukan aksi konservasi lingkungan</li>
-                    <li>• Membangun jaringan pecinta alam</li>
+                    <li>• Menjadikan AD/ART sebagai pedoman utama dalam berorganisasi.</li>
+                    <li>• Membina anggota agar berwawasan luas dan berkembang di bidang
+                        pecinta alam serta kegiatan sosial.</li>
+                    <li>• Menjadi wadah pengembangan bakat dan kreativitas anggota.</li>
                 </ul>
             </div>
+
+            <!-- Divisi Operasional -->
+            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-2 border-yellow-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">
+                    Divisi Operasional
+                </h3>
+
+                <ul class="text-gray-700 leading-relaxed space-y-2">
+                    <li><strong>Lingkungan Hidup</strong> — Konservasi dan pelestarian ekosistem.</li>
+                    <li><strong>Gunung & Hutan</strong> — Pendakian teknis dan manajemen perjalanan alam bebas.</li>
+                    <li><strong>Olahraga Arus Deras</strong> — Navigasi sungai seperti rafting & kayaking.</li>
+                    <li><strong>Panjat Tebing</strong> — Teknik pemanjatan pada medan vertikal.</li>
+                </ul>
+            </div>
+
         </div>
     </div>
 </section>
@@ -175,7 +223,7 @@
                                 <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full border border-gray-300">Hilang</span>
                             @endif
                         </div>
-                        
+
                         <!-- Price Section -->
                         <div class="border-t border-yellow-300 pt-1 mt-auto">
                             <div class="flex justify-between items-center mb-4">
@@ -230,7 +278,7 @@
     <div class="absolute inset-0 opacity-10">
         <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 0l30 30-30 30L0 30z" fill="%23EAB308" fill-opacity="0.4"/></svg>'); background-size: 60px 60px;"></div>
     </div>
-    
+
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <h2 class="text-4xl font-bold text-white mb-6 text-shadow">Bergabunglah Bersama Kami!</h2>
         <p class="text-xl text-gray-200 mb-8 leading-relaxed">
