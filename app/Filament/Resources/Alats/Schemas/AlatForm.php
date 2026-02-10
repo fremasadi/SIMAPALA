@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Alats\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\FileUpload;
 
 class AlatForm
 {
@@ -31,7 +32,7 @@ class AlatForm
                     ->required()
                     ->numeric()
                     ->default(0),
-                    FileUpload::make('image')
+                FileUpload::make('image')
                     ->label('Gambar')
                     ->image()
                     ->directory('alats')

@@ -146,51 +146,90 @@
 <!-- Activities Section -->
 <section id="activities" class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4 section-title">Kegiatan Kami</h2>
-        <p class="text-center text-gray-600 mb-16 max-w-2xl mx-auto">
-            Berbagai kegiatan petualangan dan konservasi yang kami lakukan
+
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4 section-title">
+            Kegiatan & Divisi Kami
+        </h2>
+
+        <p class="text-center text-gray-600 mb-16 max-w-3xl mx-auto">
+            Kegiatan Mapala Senja berfokus pada eksplorasi alam, pengembangan kemampuan anggota,
+            serta kontribusi nyata terhadap pelestarian lingkungan melalui berbagai divisi operasional.
         </p>
 
         <div class="grid md:grid-cols-4 gap-6">
+
+            <!-- Gunung & Hutan -->
             <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition text-center border-2 border-transparent hover:border-yellow-500">
                 <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-10 h-10 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 20l9-16 9 16H3z"/>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Pendakian Gunung</h3>
-                <p class="text-gray-600 text-sm">Ekspedisi ke gunung-gunung di seluruh Indonesia</p>
+
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                    Gunung & Hutan
+                </h3>
+
+                <p class="text-gray-600 text-sm">
+                    Kegiatan pendakian gunung, navigasi hutan, serta manajemen perjalanan alam bebas.
+                </p>
             </div>
 
+            <!-- Lingkungan Hidup -->
             <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition text-center border-2 border-transparent hover:border-yellow-500">
                 <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-10 h-10 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 2C8 7 5 10 5 13a7 7 0 0014 0c0-3-3-6-7-11z"/>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Susur Gua</h3>
-                <p class="text-gray-600 text-sm">Penelusuran gua dan ekosistem karst</p>
+
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                    Lingkungan Hidup
+                </h3>
+
+                <p class="text-gray-600 text-sm">
+                    Program konservasi, aksi lingkungan, serta edukasi pelestarian ekosistem.
+                </p>
             </div>
 
+            <!-- Arus Deras -->
             <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition text-center border-2 border-transparent hover:border-yellow-500">
                 <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-10 h-10 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M2 12c3-4 6 4 9 0s6 4 9 0"/>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Konservasi Alam</h3>
-                <p class="text-gray-600 text-sm">Program pelestarian lingkungan dan satwa</p>
+
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                    Olahraga Arus Deras
+                </h3>
+
+                <p class="text-gray-600 text-sm">
+                    Navigasi sungai seperti rafting dan kayaking yang menuntut ketangkasan tim.
+                </p>
             </div>
 
+            <!-- Panjat Tebing -->
             <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition text-center border-2 border-transparent hover:border-yellow-500">
                 <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-10 h-10 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 2l4 8-4 4-4-4 4-8z"/>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Pelatihan</h3>
-                <p class="text-gray-600 text-sm">Pendidikan dasar dan lanjutan kepecintaalaman</p>
+
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                    Panjat Tebing
+                </h3>
+
+                <p class="text-gray-600 text-sm">
+                    Olahraga ekstrem pemanjatan pada medan vertikal baik tebing alam maupun buatan.
+                </p>
             </div>
+
         </div>
     </div>
 </section>
