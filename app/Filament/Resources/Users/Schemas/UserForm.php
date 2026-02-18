@@ -18,9 +18,10 @@ class UserForm
                     ->label('Nama Lengkap')
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email ')
+                    ->label('Email')
                     ->email()
-                    ->required(),
+                    ->required()
+                    ->unique('users', 'email', ignoreRecord: true),
                 // DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
@@ -31,10 +32,10 @@ class UserForm
                     ->required(),
                 TextInput::make('no_hp')
                     ->label('Nomer Telefon')
-                    ->default(null),
+                                        ->required(),
                 Textarea::make('alamat')
                     ->label('Alamat')
-                    ->default(null)
+                    ->required()
                     ->columnSpanFull(),
             ]);
     }
