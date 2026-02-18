@@ -7,8 +7,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\Action;
 
 class TransaksiAlatsTable
@@ -69,12 +68,7 @@ class TransaksiAlatsTable
                     ]),
                 ),
                 EditAction::make(),
-            ])
-
-            ->toolbarActions([
-                // BulkActionGroup::make([
-                //     DeleteBulkAction::make(),
-                // ]),
+                DeleteAction::make(),
             ]);
     }
 }
