@@ -22,7 +22,6 @@ class KasBulananResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-date-range';
     protected static UnitEnum|string|null $navigationGroup = 'Data Master';
     protected static ?string $navigationLabel = 'Daftar Kas';
-    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {

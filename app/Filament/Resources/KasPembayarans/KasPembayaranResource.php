@@ -23,7 +23,6 @@ class KasPembayaranResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-currency-dollar';
     protected static UnitEnum|string|null $navigationGroup = 'Data Master';
     protected static ?string $navigationLabel = 'Pembayaran Kas';
-    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {

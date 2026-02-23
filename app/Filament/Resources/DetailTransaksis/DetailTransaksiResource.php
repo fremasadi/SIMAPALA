@@ -18,7 +18,6 @@ use UnitEnum;
 class DetailTransaksiResource extends Resource
 {
     protected static ?string $model = DetailTransaksi::class;
-    protected static bool $shouldRegisterNavigation = false;
 
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
