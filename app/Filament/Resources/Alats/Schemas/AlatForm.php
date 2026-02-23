@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Alats\Schemas;
 
 use App\Models\Alat;
+use App\Models\Bahan;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -36,8 +37,12 @@ class AlatForm
                     ->required(),
                 TextInput::make('ukuran')
                     ->label('Ukuran'),
-                TextInput::make('bahan')
-                    ->label('Bahan'),
+                Select::make('bahan')
+                    ->label('Bahan')
+                    ->multiple()
+                    ->options(fn () => Bahan::orderBy('name')->pluck('name', 'name'))
+                    ->searchable()
+                    ->preload(),
                 Select::make('status')
                     ->options(['tersedia' => 'Tersedia', 'dipinjam' => 'Dipinjam', 'rusak' => 'Rusak', 'hilang' => 'Hilang'])
                     ->default('tersedia')

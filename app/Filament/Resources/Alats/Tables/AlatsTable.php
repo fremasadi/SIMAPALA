@@ -28,7 +28,9 @@ class AlatsTable
                     ->searchable(),
                 TextColumn::make('bahan')
                     ->label('Bahan')
-                    ->searchable(),
+                    ->badge()
+                    ->separator(',')
+                    ->getStateUsing(fn ($record) => is_array($record->bahan) ? $record->bahan : []),
                 TextColumn::make('status')
                     ->badge(),
                 TextColumn::make('harga_sewa')

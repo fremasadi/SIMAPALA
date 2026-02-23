@@ -12,5 +12,6 @@ class Alat extends Model
 
     protected $casts = [
         'harga_sewa' => 'float',
+        'bahan'      => 'array',
     ];
 }
