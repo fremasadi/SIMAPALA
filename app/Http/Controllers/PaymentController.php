@@ -138,8 +138,14 @@ class PaymentController extends Controller
             ->findOrFail($id);
         
         // Pastikan user hanya bisa melihat pembayaran miliknya sendiri
-        if ($pembayaran->transaksi->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized');
+        if ((int) $pembayaran->transaksi->user_id !== (int) Auth::id()) {
+            Log::warning('Akses pembayaran ditolak', [
+                'pembayaran_id'  => $id,
+                'owner_user_id'  => $pembayaran->transaksi->user_id,
+                'auth_user_id'   => Auth::id(),
+            ]);
+            return redirect()->route('home')
+                ->with('error', 'Anda tidak memiliki akses ke halaman pembayaran ini. Silakan login dengan akun yang benar.');
         }
 
         // Get latest status from Midtrans
