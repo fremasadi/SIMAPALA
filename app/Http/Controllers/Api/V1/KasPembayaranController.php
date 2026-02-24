@@ -33,6 +33,14 @@ class KasPembayaranController extends Controller
      */
     public function store(Request $request)
 {
+    // Konversi string kosong ke null agar validasi nullable bekerja benar di JSON request
+    if ($request->bukti_bayar === '' || $request->bukti_bayar === null) {
+        $request->merge(['bukti_bayar' => null]);
+    }
+    if ($request->keterangan === '') {
+        $request->merge(['keterangan' => null]);
+    }
+
     Log::info('KasPembayaran: request masuk', [
         'user_id' => $request->user()?->id,
         'payload' => $request->except('bukti_bayar'),
@@ -41,10 +49,10 @@ class KasPembayaranController extends Controller
 
     $request->validate([
         'kas_bulanan_id' => 'required|exists:kas_bulanans,id',
-        'nominal' => 'required|numeric|min:1000',
-        'metode' => 'required|in:dana,cash',
-        'bukti_bayar' => 'nullable|image|max:2048',
-        'keterangan' => 'nullable|string',
+        'nominal'        => 'required|numeric|min:1000',
+        'metode'         => 'required|in:dana,cash',
+        'bukti_bayar'    => 'nullable|image|max:2048',
+        'keterangan'     => 'nullable|string',
     ]);
 
     $kas = KasBulanan::where('id', $request->kas_bulanan_id)
