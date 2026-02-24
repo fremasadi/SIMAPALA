@@ -34,8 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Kas Bulanan
     Route::get('/kas-bulanan', [KasBulananController::class, 'index']);
-    Route::get('/kas-bulanan/{id}', [KasBulananController::class, 'show']);
+    Route::get('/kas-bulanan/options', [KasBulananController::class, 'listOption']);
     Route::get('/kas-bulanan/total/summary', [KasBulananController::class, 'totalKas']);
+    Route::get('/kas-bulanan/{id}', [KasBulananController::class, 'show']);
 
     // Kas Pembayaran
     Route::get('/kas-pembayaran', [KasPembayaranController::class, 'index']);
