@@ -8,6 +8,7 @@ use Filament\Actions;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class CreateAnggota extends CreateRecord
 {
@@ -41,8 +42,24 @@ class CreateAnggota extends CreateRecord
 
     protected function afterCreate(): void
     {
-        // Generate kas bulanan otomatis untuk anggota baru
-        // Command sudah handle duplikat & generate dari bulan terakhir sampai sekarang
-        Artisan::call('kas:generate-bulanan');
+        Log::info('CreateAnggota: afterCreate dipanggil', [
+            'record_id' => $this->record->id ?? null,
+            'user_id'   => $this->record->user_id ?? null,
+        ]);
+
+        try {
+            $exitCode = Artisan::call('kas:generate-bulanan');
+            $output   = Artisan::output();
+
+            Log::info('CreateAnggota: kas:generate-bulanan selesai', [
+                'exit_code' => $exitCode,
+                'output'    => $output,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('CreateAnggota: kas:generate-bulanan gagal', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
     }
 }
