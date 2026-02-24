@@ -6,6 +6,7 @@ use App\Filament\Resources\Anggotas\AnggotaResource;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Actions;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 
 class CreateAnggota extends CreateRecord
@@ -36,5 +37,12 @@ class CreateAnggota extends CreateRecord
         unset($data['name'], $data['email'], $data['password']);
 
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        // Generate kas bulanan otomatis untuk anggota baru
+        // Command sudah handle duplikat & generate dari bulan terakhir sampai sekarang
+        Artisan::call('kas:generate-bulanan');
     }
 }
