@@ -5,7 +5,6 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TransactionController;
 
-
 use Illuminate\Support\Facades\Route;
 use App\Models\Alat;
 
@@ -19,6 +18,17 @@ Route::get('/', function () {
     $alats = Alat::where('status', 'tersedia')->get();
     return view('welcome', compact('alats'));
 })->name('home');
+
+/*
+|--------------------------------------------------------------------------
+| Midtrans Webhook & Finish — PUBLIC, harus SEBELUM route {id}
+| Jika diletakkan setelah /payment/{id}, Laravel akan mencocokkan
+| /payment/finish ke show('finish') bukan finish() — menyebabkan 403/404
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
 
 /*
 |--------------------------------------------------------------------------
@@ -49,14 +59,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/add', [CartController::class, 'add'])->name('add');
         Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('remove');
         Route::post('/checkout', [CartController::class, 'checkout'])->name('checkout');
-
     });
 
-
-    // Payment
+    // Payment (routes dengan {id} harus SETELAH static routes /finish dan /callback)
     Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
-    Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('payment.show');
     Route::get('/payment/check/{id}', [PaymentController::class, 'checkStatus'])->name('payment.check');
+    Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('payment.show');
 
     // Transaction History
     Route::get('/my-transactions', [TransactionController::class, 'index'])->name('transactions.index');
@@ -64,9 +72,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/my-transactions/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
 
 });
-
-Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
-Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
 
 /*
 |--------------------------------------------------------------------------
