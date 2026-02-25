@@ -120,7 +120,7 @@ class Pembayaran extends Model
             'bank_transfer' => strtoupper($this->bank ?? '') . ' Virtual Account',
             'echannel' => 'Mandiri Bill',
             'gopay' => 'GoPay',
-            'qris' => 'QRIS',
+            'qris' => 'QRIS' . ($this->bank ? ' (' . ucfirst($this->bank) . ')' : ''),
             'shopeepay' => 'ShopeePay',
             'other' => 'Lainnya',
         ];
