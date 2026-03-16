@@ -97,6 +97,10 @@
                     </h2>
 
                     <div class="space-y-3">
+                        @php
+                            $durasi = (int) $pembayaran->transaksi->tanggal_pinjam->diffInDays($pembayaran->transaksi->tanggal_kembali);
+                            $durasi = max(1, $durasi);
+                        @endphp
                         @foreach($pembayaran->transaksi->detailTransaksis as $detail)
                         <div class="flex items-center justify-between p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100">
                             <div class="flex items-center">
@@ -107,12 +111,12 @@
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-800">{{ $detail->alat->nama_alat }}</p>
-                                    <p class="text-sm text-gray-600">{{ $detail->alat->kode_alat }}</p>
+                                    <p class="text-sm text-gray-600">{{ $detail->alat->kode_alat }} &bull; Rp {{ number_format($detail->alat->harga_sewa, 0, ',', '.') }}/hari × {{ $durasi }} hari</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="font-bold text-amber-600">Rp {{ number_format($detail->alat->harga_sewa, 0, ',', '.') }}</p>
-                                <p class="text-xs text-gray-500">per hari</p>
+                                <p class="font-bold text-amber-600">Rp {{ number_format($detail->alat->harga_sewa * $durasi, 0, ',', '.') }}</p>
+                                <p class="text-xs text-gray-500">subtotal</p>
                             </div>
                         </div>
                         @endforeach

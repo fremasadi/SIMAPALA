@@ -82,14 +82,19 @@ class PaymentController extends Controller
                 'phone' => $user->phone ?? '08123456789',
             ];
 
-            // Item Details
+            // Hitung durasi sewa (hari)
+            $durasi = (int) \Carbon\Carbon::parse($validated['tanggal_pinjam'])
+                ->diffInDays(\Carbon\Carbon::parse($validated['tanggal_kembali']));
+            $durasi = max(1, $durasi);
+
+            // Item Details — price per hari × quantity (durasi)
             $itemDetails = [];
             foreach ($cart as $item) {
                 $itemDetails[] = [
-                    'id' => $item['id'],
-                    'price' => (int) $item['harga_sewa'],
-                    'quantity' => 1,
-                    'name' => $item['nama_alat'] . ' - Sewa Alat',
+                    'id'       => $item['id'],
+                    'price'    => (int) $item['harga_sewa'],
+                    'quantity' => $durasi,
+                    'name'     => $item['nama_alat'] . " (Sewa {$durasi} Hari)",
                 ];
             }
 
