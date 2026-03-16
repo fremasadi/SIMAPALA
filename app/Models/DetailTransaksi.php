@@ -15,10 +15,21 @@ class DetailTransaksi extends Model
         'transaksi_id',
         'alat_id',
         'kondisi_kembali',
-        'denda',
+        'denda_telat',
+        'denda_rusak',
         'keterangan',
-        'foto_kembali'
+        'foto_kembali',
     ];
+
+    protected $casts = [
+        'denda_telat' => 'decimal:2',
+        'denda_rusak' => 'decimal:2',
+    ];
+
+    public function getTotalDendaAttribute(): float
+    {
+        return (float) $this->denda_telat + (float) $this->denda_rusak;
+    }
 
     // Relasi ke transaksi
     public function transaksi(): BelongsTo

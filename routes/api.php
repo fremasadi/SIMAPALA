@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\PinjamController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\KasBulananController;
+use App\Http\Controllers\Api\V1\DanaMasukController;
 use App\Http\Controllers\Api\V1\KasPembayaranController;
 
 Route::get('/user', function (Request $request) {
@@ -31,12 +32,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
+    Route::get('/profile/image', [ProfileController::class, 'getImage']);
+    Route::post('/profile/image', [ProfileController::class, 'updateImage']);
 
     // Kas Bulanan
     Route::get('/kas-bulanan', [KasBulananController::class, 'index']);
     Route::get('/kas-bulanan/options', [KasBulananController::class, 'listOption']);
     Route::get('/kas-bulanan/total/summary', [KasBulananController::class, 'totalKas']);
     Route::get('/kas-bulanan/{id}', [KasBulananController::class, 'show']);
+
+    // Dana Masuk
+    Route::get('/dana-masuk', [DanaMasukController::class, 'index']);
+    Route::post('/dana-masuk', [DanaMasukController::class, 'store']);
+    Route::get('/dana-masuk/summary', [DanaMasukController::class, 'summary']);
 
     // Kas Pembayaran
     Route::get('/kas-pembayaran', [KasPembayaranController::class, 'index']);

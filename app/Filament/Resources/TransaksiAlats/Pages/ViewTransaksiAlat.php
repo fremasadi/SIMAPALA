@@ -3,17 +3,14 @@
 namespace App\Filament\Resources\TransaksiAlats\Pages;
 
 use App\Filament\Resources\TransaksiAlats\TransaksiAlatResource;
-use Filament\Actions\DeleteAction;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ViewRecord;
 
-class EditTransaksiAlat extends EditRecord
+class ViewTransaksiAlat extends ViewRecord
 {
     protected static string $resource = TransaksiAlatResource::class;
 
     protected function getHeaderActions(): array
     {
-        return [
-            // DeleteAction::make(),
-        ];
+        return [];
     }
 }

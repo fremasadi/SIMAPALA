@@ -13,6 +13,7 @@ class Anggota extends Model
         'user_id',
         'nim',
         'status_keanggotaan',
+        'image',
     ];
 
     public function user()

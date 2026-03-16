@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DanaMasuk;
 use App\Models\Pembayaran;
 use App\Models\TransaksiAlat;
 use App\Services\MidtransService;
@@ -305,6 +306,25 @@ class PaymentController extends Controller
             $pembayaran->transaksi->update([
                 'status' => 'disetujui',
             ]);
+
+            // Insert dana masuk penyewaan jika belum ada
+            $sudahAda = DanaMasuk::where('sumber_type', TransaksiAlat::class)
+                ->where('sumber_id', $pembayaran->transaksi_id)
+                ->where('jenis', 'penyewaan')
+                ->exists();
+
+            if (!$sudahAda) {
+                DanaMasuk::create([
+                    'jenis'       => 'penyewaan',
+                    'nominal'     => $pembayaran->gross_amount,
+                    'status'      => 'approved',
+                    'keterangan'  => "Pembayaran sewa — Order #{$pembayaran->order_id}",
+                    'tanggal'     => now()->toDateString(),
+                    'user_id'     => $pembayaran->transaksi->user_id,
+                    'sumber_type' => TransaksiAlat::class,
+                    'sumber_id'   => $pembayaran->transaksi_id,
+                ]);
+            }
 
             Log::info('Payment settled, transaksi updated to disetujui', [
                 'transaksi_id' => $pembayaran->transaksi_id,

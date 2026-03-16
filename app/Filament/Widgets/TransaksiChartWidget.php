@@ -10,6 +10,7 @@ class TransaksiChartWidget extends ChartWidget
 {
     protected ?string $heading = 'Transaksi per Bulan';
     protected static ?int $sort = 2;
+    // Row 2: berdampingan dengan AlatStatusWidget (span=1)
     protected int | string | array $columnSpan = 2;
 
     protected function getType(): string

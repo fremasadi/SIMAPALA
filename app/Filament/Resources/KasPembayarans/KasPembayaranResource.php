@@ -21,7 +21,7 @@ class KasPembayaranResource extends Resource
     protected static ?string $model = KasPembayaran::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-currency-dollar';
-    protected static UnitEnum|string|null $navigationGroup = 'Data Master';
+    protected static UnitEnum|string|null $navigationGroup = 'Transaksi';
     protected static ?string $navigationLabel = 'Pembayaran Kas';
 
     public static function form(Schema $schema): Schema
@@ -44,9 +44,8 @@ class KasPembayaranResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListKasPembayarans::route('/'),
+            'index'  => ListKasPembayarans::route('/'),
             'create' => CreateKasPembayaran::route('/create'),
-            'edit' => EditKasPembayaran::route('/{record}/edit'),
         ];
     }
 }

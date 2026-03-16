@@ -9,6 +9,7 @@ class AlatStatusWidget extends ChartWidget
 {
     protected ?string $heading = 'Status Alat';
     protected static ?int $sort = 3;
+    // Row 2: berdampingan dengan TransaksiChartWidget (span=2)
     protected int | string | array $columnSpan = 1;
 
     protected function getType(): string

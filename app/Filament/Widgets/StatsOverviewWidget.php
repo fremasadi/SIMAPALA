@@ -4,10 +4,9 @@ namespace App\Filament\Widgets;
 
 use App\Models\Alat;
 use App\Models\Anggota;
+use App\Models\DanaMasuk;
 use App\Models\KasPembayaran;
-use App\Models\Pembayaran;
 use App\Models\TransaksiAlat;
-use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -18,36 +17,31 @@ class StatsOverviewWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        $totalAlat       = Alat::count();
-        $alatTersedia    = Alat::where('status', 'tersedia')->count();
-        $alatDipinjam    = Alat::where('status', 'dipinjam')->count();
+        $totalAlat    = Alat::count();
+        $alatTersedia = Alat::where('status', 'tersedia')->count();
+        $alatDipinjam = Alat::where('status', 'dipinjam')->count();
 
-        $totalUser       = User::count();
-        $totalAnggota    = Anggota::where('status_keanggotaan', 'aktif')->count();
+        $totalAnggota = Anggota::where('status_keanggotaan', 'aktif')->count();
 
         $transaksBulanIni = TransaksiAlat::whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
 
-        $pendapatanBulanIni = Pembayaran::whereIn('transaction_status', ['settlement', 'capture'])
-            ->whereMonth('settlement_time', now()->month)
-            ->whereYear('settlement_time', now()->year)
-            ->sum('gross_amount');
+        $kasPending = KasPembayaran::where('status', 'menunggu')->count();
 
-        $kasTerkumpul = KasPembayaran::where('status', 'diterima')
-            ->whereMonth('tanggal_bayar', now()->month)
-            ->whereYear('tanggal_bayar', now()->year)
-            ->sum('nominal');
+        $sumbanganPending = DanaMasuk::where('status', 'pending')
+            ->where('jenis', 'sumbangan')
+            ->count();
 
         return [
             Stat::make('Total Alat', $totalAlat)
                 ->description("{$alatTersedia} tersedia · {$alatDipinjam} dipinjam")
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->descriptionIcon('heroicon-m-archive-box')
                 ->color('success')
                 ->icon('heroicon-o-archive-box'),
 
-            Stat::make('Total Pengguna', $totalUser)
-                ->description("{$totalAnggota} anggota aktif")
+            Stat::make('Anggota Aktif', $totalAnggota)
+                ->description('Terdaftar & aktif')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
                 ->icon('heroicon-o-users'),
@@ -58,17 +52,17 @@ class StatsOverviewWidget extends BaseWidget
                 ->color('warning')
                 ->icon('heroicon-o-clipboard-document-list'),
 
-            Stat::make('Pendapatan Bulan Ini', 'Rp ' . number_format($pendapatanBulanIni, 0, ',', '.'))
-                ->description('Pembayaran settlement')
-                ->descriptionIcon('heroicon-m-banknotes')
-                ->color('success')
+            Stat::make('Kas Menunggu Verifikasi', $kasPending)
+                ->description('Pembayaran kas pending')
+                ->descriptionIcon('heroicon-m-clock')
+                ->color($kasPending > 0 ? 'warning' : 'success')
                 ->icon('heroicon-o-banknotes'),
 
-            Stat::make('Kas Terkumpul Bulan Ini', 'Rp ' . number_format($kasTerkumpul, 0, ',', '.'))
-                ->description('Total kas diterima')
-                ->descriptionIcon('heroicon-m-building-library')
-                ->color('primary')
-                ->icon('heroicon-o-wallet'),
+            Stat::make('Sumbangan Pending', $sumbanganPending)
+                ->description('Menunggu approval admin')
+                ->descriptionIcon('heroicon-m-heart')
+                ->color($sumbanganPending > 0 ? 'warning' : 'success')
+                ->icon('heroicon-o-heart'),
         ];
     }
 }

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class TransaksiAlat extends Model
 {
+    const DENDA_TELAT_PER_HARI = 50000;
+
     protected $table = 'transaksi_alats';
 
     protected $fillable = [

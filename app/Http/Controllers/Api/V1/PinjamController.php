@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TransaksiAlat;
 use App\Models\DetailTransaksi;
+use App\Models\Pembayaran;
 use App\Models\Alat;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PinjamController extends Controller
 {
@@ -57,11 +59,22 @@ public function show($id)
      */
     public function pinjam(Request $request)
     {
+        Log::info('Pinjam: request masuk', [
+            'user_id' => Auth::id(),
+            'payload' => $request->all(),
+        ]);
+
         $request->validate([
             'tanggal_pinjam'   => 'required|date',
             'tanggal_kembali'  => 'required|date|after_or_equal:tanggal_pinjam',
             'alat_ids'         => 'required|array|min:1',
             'alat_ids.*'       => 'exists:alats,id',
+        ]);
+
+        Log::info('Pinjam: validasi lolos', [
+            'alat_ids'        => $request->alat_ids,
+            'tanggal_pinjam'  => $request->tanggal_pinjam,
+            'tanggal_kembali' => $request->tanggal_kembali,
         ]);
 
         DB::beginTransaction();
@@ -75,8 +88,10 @@ public function show($id)
                 'tanggal_pinjam'  => $request->tanggal_pinjam,
                 'tanggal_kembali' => $request->tanggal_kembali,
                 'status'          => 'menunggu',
-                'total_biaya'     => 0, // GRATIS
+                'total_biaya'     => 0,
             ]);
+
+            Log::info('Pinjam: transaksi dibuat', ['transaksi_id' => $transaksi->id]);
 
             // Simpan detail alat
             foreach ($request->alat_ids as $alatId) {
@@ -85,11 +100,28 @@ public function show($id)
                     'alat_id'      => $alatId,
                 ]);
 
-                // Optional: ubah status alat
-                Alat::where('id', $alatId)->update([
-                    'status' => 'dipinjam',
-                ]);
+                Alat::where('id', $alatId)->update(['status' => 'dipinjam']);
+
+                Log::info('Pinjam: detail alat disimpan', ['alat_id' => $alatId]);
             }
+
+            // Auto insert pembayaran settlement (pinjam = gratis)
+            $pembayaran = Pembayaran::create([
+                'transaksi_id'       => $transaksi->id,
+                'order_id'           => 'PINJAM-' . $transaksi->id . '-' . time(),
+                'gross_amount'       => 0,
+                'payment_type'       => 'other',
+                'transaction_status' => 'settlement',
+                'settlement_time'    => now(),
+                'notes'              => 'Peminjaman gratis — anggota',
+            ]);
+
+            Log::info('Pinjam: pembayaran dibuat', ['pembayaran_id' => $pembayaran->id]);
+
+            // Update status transaksi menjadi disetujui
+            $transaksi->update(['status' => 'disetujui']);
+
+            Log::info('Pinjam: transaksi disetujui', ['transaksi_id' => $transaksi->id]);
 
             DB::commit();
 
@@ -98,18 +130,24 @@ public function show($id)
                 'message' => 'Permintaan pinjam alat berhasil dibuat',
                 'data' => [
                     'transaksi_id' => $transaksi->id,
-                    'status' => $transaksi->status,
-                    'total_biaya' => $transaksi->total_biaya,
+                    'status'       => $transaksi->fresh()->status,
+                    'total_biaya'  => $transaksi->total_biaya,
                 ],
             ], 201);
 
         } catch (\Exception $e) {
             DB::rollBack();
 
+            Log::error('Pinjam: gagal', [
+                'user_id' => Auth::id(),
+                'error'   => $e->getMessage(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal membuat transaksi',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }

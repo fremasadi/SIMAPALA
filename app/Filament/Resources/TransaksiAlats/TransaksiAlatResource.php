@@ -5,8 +5,10 @@ namespace App\Filament\Resources\TransaksiAlats;
 use App\Filament\Resources\TransaksiAlats\Pages\CreateTransaksiAlat;
 use App\Filament\Resources\TransaksiAlats\Pages\EditTransaksiAlat;
 use App\Filament\Resources\TransaksiAlats\Pages\ListTransaksiAlats;
+use App\Filament\Resources\TransaksiAlats\Pages\ViewTransaksiAlat;
 use App\Filament\Resources\TransaksiAlats\Schemas\TransaksiAlatForm;
 use App\Filament\Resources\TransaksiAlats\Tables\TransaksiAlatsTable;
+use App\Filament\Resources\TransaksiAlats\RelationManagers\DetailTransaksiRelationManager;
 use App\Models\TransaksiAlat;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -37,20 +39,23 @@ class TransaksiAlatResource extends Resource
     public static function getRelations(): array
     {
         return [
-                //
-            ];
+            DetailTransaksiRelationManager::class,
+        ];
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->withCount('detailTransaksis');
+        return parent::getEloquentQuery()
+            ->withCount('detailTransaksis')
+            ->whereHas('pembayaran', fn ($q) => $q->whereIn('transaction_status', ['settlement', 'capture']));
     }
 
     public static function getPages(): array
     {
         return [
             'index' => ListTransaksiAlats::route('/'),
-            'edit' => EditTransaksiAlat::route('/{record}/edit'),
+            'view'  => ViewTransaksiAlat::route('/{record}'),
+            'edit'  => EditTransaksiAlat::route('/{record}/edit'),
         ];
     }
 }

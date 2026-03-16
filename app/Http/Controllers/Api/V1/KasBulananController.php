@@ -34,6 +34,7 @@ class KasBulananController extends Controller
     {
         $kas = KasBulanan::with('pembayarans')
             ->where('user_id', $request->user()->id)
+
             ->findOrFail($id);
 
         return response()->json([
@@ -57,6 +58,7 @@ class KasBulananController extends Controller
 
         $data = KasBulanan::where('user_id', $request->user()->id)
             ->orderByDesc('tahun')
+            ->where('status', 'belum_lunas')
             ->orderByDesc('bulan')
             ->get(['id', 'bulan', 'tahun', 'status'])
             ->map(fn ($kas) => [
