@@ -13,10 +13,10 @@
 
             <!-- Navigation Links -->
             <div class="hidden md:flex items-center space-x-8">
-                <a href="#home" class="text-gray-100 hover:text-yellow-400 transition font-medium">Beranda</a>
-                <a href="#about" class="text-gray-100 hover:text-yellow-400 transition font-medium">Tentang</a>
-                <a href="#activities" class="text-gray-100 hover:text-yellow-400 transition font-medium">Kegiatan</a>
-                <a href="#equipment" class="text-gray-100 hover:text-yellow-400 transition font-medium">Sewa Alat</a>
+                <a href="{{ url('/') }}#home" class="text-gray-100 hover:text-yellow-400 transition font-medium">Beranda</a>
+                <a href="{{ url('/') }}#about" class="text-gray-100 hover:text-yellow-400 transition font-medium">Tentang</a>
+                <a href="{{ url('/') }}#activities" class="text-gray-100 hover:text-yellow-400 transition font-medium">Kegiatan</a>
+                <a href="{{ url('/') }}#equipment" class="text-gray-100 hover:text-yellow-400 transition font-medium">Sewa Alat</a>
             </div>
 
             <!-- Auth Links -->
