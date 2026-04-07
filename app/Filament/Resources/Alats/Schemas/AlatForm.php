@@ -47,6 +47,11 @@ class AlatForm
                     ->options(['tersedia' => 'Tersedia', 'dipinjam' => 'Dipinjam', 'rusak' => 'Rusak', 'hilang' => 'Hilang'])
                     ->default('tersedia')
                     ->required(),
+                TextInput::make('harga_alat')
+                    ->label('Harga Alat')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
                 TextInput::make('harga_sewa')
                     ->label('Harga Sewa')
                     ->required()

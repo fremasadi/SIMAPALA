@@ -102,6 +102,7 @@ class TransaksiAlatsTable
                         'detail_items' => $record->detailTransaksis->map(fn ($d) => [
                             'id'             => $d->id,
                             'alat_nama'      => $d->alat->nama_alat ?? '-',
+                            'harga_alat'     => $d->alat->harga_alat ?? 0,
                             'kondisi_kembali' => $d->kondisi_kembali ?? 'baik',
                             'denda_rusak'    => $d->denda_rusak ?? 0,
                         ])->toArray(),
@@ -129,6 +130,7 @@ class TransaksiAlatsTable
                                     ->columns(3)
                                     ->schema([
                                         Hidden::make('id'),
+                                        Hidden::make('harga_alat'),
                                         TextInput::make('alat_nama')
                                             ->label('Alat')
                                             ->disabled(),
@@ -139,6 +141,12 @@ class TransaksiAlatsTable
                                                 'rusak'  => 'Rusak',
                                                 'hilang' => 'Hilang',
                                             ])
+                                            ->live()
+                                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                                if ($state === 'hilang') {
+                                                    $set('denda_rusak', $get('harga_alat'));
+                                                }
+                                            })
                                             ->required(),
                                         TextInput::make('denda_rusak')
                                             ->label('Denda Rusak/Hilang (Rp)')

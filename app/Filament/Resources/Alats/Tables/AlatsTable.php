@@ -33,6 +33,10 @@ class AlatsTable
                     ->getStateUsing(fn ($record) => is_array($record->bahan) ? $record->bahan : []),
                 TextColumn::make('status')
                     ->badge(),
+                TextColumn::make('harga_alat')
+                    ->label('Harga Alat')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('harga_sewa')
                     ->label('Harga Sewa')
                     ->numeric()
