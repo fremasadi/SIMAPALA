@@ -2,11 +2,19 @@
 
 namespace App\Filament\Resources\DanaMasuks\Tables;
 
+use App\Exports\DanaMasukExport;
+use App\Models\DanaMasuk;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DanaMasuksTable
 {
@@ -15,22 +23,27 @@ class DanaMasuksTable
         return $table
             ->columns([
                 TextColumn::make('jenis')
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => DanaMasuk::JENIS[$state] ?? ucfirst($state)),
                 TextColumn::make('nominal')
-                    ->numeric()
+                    ->money('IDR')
                     ->sortable(),
                 TextColumn::make('keterangan')
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(50),
                 TextColumn::make('tanggal')
-                    ->date()
+                    ->date('d M Y')
                     ->sortable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        'approved' => 'success',
+                        'pending'  => 'warning',
+                        default    => 'gray',
+                    }),
                 TextColumn::make('user.name')
+                    ->label('Diinput Oleh')
                     ->searchable(),
-                // TextColumn::make('sumber_type')
-                //     ->searchable(),
-                // TextColumn::make('sumber_id')
-                //     ->numeric()
-                //     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -41,12 +54,63 @@ class DanaMasuksTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('jenis')
+                    ->label('Jenis Dana')
+                    ->options(DanaMasuk::JENIS)
+                    ->placeholder('Semua Jenis'),
+
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pending'  => 'Pending',
+                        'approved' => 'Approved',
+                    ])
+                    ->placeholder('Semua Status'),
+
+                Filter::make('tanggal')
+                    ->label('Rentang Tanggal')
+                    ->form([
+                        DatePicker::make('dari')
+                            ->label('Dari Tanggal'),
+                        DatePicker::make('sampai')
+                            ->label('Sampai Tanggal'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return $query
+                            ->when($data['dari'], fn ($q) => $q->whereDate('tanggal', '>=', $data['dari']))
+                            ->when($data['sampai'], fn ($q) => $q->whereDate('tanggal', '<=', $data['sampai']));
+                    })
+                    ->indicateUsing(function (array $data) {
+                        $indicators = [];
+                        if ($data['dari'] ?? null) {
+                            $indicators[] = 'Dari: ' . $data['dari'];
+                        }
+                        if ($data['sampai'] ?? null) {
+                            $indicators[] = 'Sampai: ' . $data['sampai'];
+                        }
+                        return $indicators;
+                    }),
             ])
             ->recordActions([
                 EditAction::make(),
             ])
             ->toolbarActions([
+                Action::make('export')
+                    ->label('Export Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function ($livewire) {
+                        $filters = $livewire->tableFilters ?? [];
+                        return Excel::download(
+                            new DanaMasukExport([
+                                'jenis'   => $filters['jenis']['value'] ?? null,
+                                'status'  => $filters['status']['value'] ?? null,
+                                'dari'    => $filters['tanggal']['dari'] ?? null,
+                                'sampai'  => $filters['tanggal']['sampai'] ?? null,
+                            ]),
+                            'dana-masuk-' . now()->format('Y-m-d') . '.xlsx'
+                        );
+                    }),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -141,18 +141,22 @@ class TransaksiAlatsTable
                                                 'rusak'  => 'Rusak',
                                                 'hilang' => 'Hilang',
                                             ])
+                                            ->required()
                                             ->live()
-                                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                            ->afterStateUpdated(function ($state, $set, $get) {
                                                 if ($state === 'hilang') {
-                                                    $set('denda_rusak', $get('harga_alat'));
+                                                    $set('denda_rusak', (float) $get('harga_alat'));
+                                                } elseif ($state === 'baik') {
+                                                    $set('denda_rusak', 0);
                                                 }
-                                            })
-                                            ->required(),
+                                            }),
                                         TextInput::make('denda_rusak')
                                             ->label('Denda Rusak/Hilang (Rp)')
                                             ->numeric()
                                             ->prefix('Rp')
-                                            ->default(0),
+                                            ->default(0)
+                                            ->disabled(fn ($get) => $get('kondisi_kembali') === 'hilang')
+                                            ->dehydrated(),
                                     ]),
                             ]),
                     ])
