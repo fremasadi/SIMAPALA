@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\Alats\Tables;
 
+use App\Models\Alat;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\ImageColumn;
@@ -55,6 +58,37 @@ class AlatsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('duplikasi')
+                    ->label('Duplikasi')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->color('info')
+                    ->modalHeading('Duplikasi Data Alat')
+                    ->form([
+                        TextInput::make('kode_alat_prefix')
+                            ->label('Kode Alat')
+                            ->helperText('Jika jumlah > 1, kode otomatis ditambah suffix -1, -2, dst.')
+                            ->required()
+                            ->default(fn ($record) => $record->kode_alat . '-copy'),
+                        TextInput::make('jumlah')
+                            ->label('Jumlah Duplikasi')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(20)
+                            ->default(1)
+                            ->required(),
+                    ])
+                    ->action(function ($record, array $data) {
+                        $jumlah = (int) $data['jumlah'];
+                        $prefix = $data['kode_alat_prefix'];
+
+                        for ($i = 1; $i <= $jumlah; $i++) {
+                            $kode = $jumlah === 1 ? $prefix : "{$prefix}-{$i}";
+
+                            $record->replicate()
+                                ->fill(['kode_alat' => $kode])
+                                ->save();
+                        }
+                    }),
                 DeleteAction::make(),
             ]);
     }
