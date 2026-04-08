@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\DanaMasuks\Tables;
 
-use App\Exports\DanaMasukExport;
 use App\Models\DanaMasuk;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -14,7 +13,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Maatwebsite\Excel\Facades\Excel;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class DanaMasuksTable
 {
@@ -101,15 +100,26 @@ class DanaMasuksTable
                     ->color('success')
                     ->action(function ($livewire) {
                         $filters = $livewire->tableFilters ?? [];
-                        return Excel::download(
-                            new DanaMasukExport([
-                                'jenis'   => $filters['jenis']['value'] ?? null,
-                                'status'  => $filters['status']['value'] ?? null,
-                                'dari'    => $filters['tanggal']['dari'] ?? null,
-                                'sampai'  => $filters['tanggal']['sampai'] ?? null,
-                            ]),
-                            'dana-masuk-' . now()->format('Y-m-d') . '.xlsx'
-                        );
+
+                        $data = DanaMasuk::query()
+                            ->with('user')
+                            ->when($filters['jenis']['value'] ?? null, fn ($q, $v) => $q->where('jenis', $v))
+                            ->when($filters['status']['value'] ?? null, fn ($q, $v) => $q->where('status', $v))
+                            ->when($filters['tanggal']['dari'] ?? null, fn ($q, $v) => $q->whereDate('tanggal', '>=', $v))
+                            ->when($filters['tanggal']['sampai'] ?? null, fn ($q, $v) => $q->whereDate('tanggal', '<=', $v))
+                            ->orderBy('tanggal', 'desc')
+                            ->get()
+                            ->map(fn ($row, $i) => [
+                                'No'            => $i + 1,
+                                'Jenis'         => DanaMasuk::JENIS[$row->jenis] ?? ucfirst($row->jenis),
+                                'Nominal (Rp)'  => $row->nominal,
+                                'Keterangan'    => $row->keterangan,
+                                'Tanggal'       => $row->tanggal?->format('d/m/Y'),
+                                'Status'        => ucfirst($row->status),
+                                'Diinput Oleh'  => $row->user?->name,
+                            ]);
+
+                        return (new FastExcel($data))->download('dana-masuk-' . now()->format('Y-m-d') . '.xlsx');
                     }),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
