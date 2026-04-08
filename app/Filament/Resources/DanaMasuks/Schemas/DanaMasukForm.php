@@ -18,7 +18,7 @@ class DanaMasukForm
             // 'penyewaan' => 'Penyewaan',
             // 'denda_telat' => 'Denda telat',
             // 'denda_rusak' => 'Denda rusak',
-            // 'kas' => 'Kas',
+            'dana_kampus' => 'dana_kampus',
             'sumbangan' => 'Sumbangan',
         ])
                     ->required(),
