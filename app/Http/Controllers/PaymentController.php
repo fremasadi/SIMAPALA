@@ -312,6 +312,21 @@ class PaymentController extends Controller
                 'status' => 'disetujui',
             ]);
 
+            // Kurangi stok setiap alat yang disewa (hanya sekali)
+            $sudahKurangStok = DanaMasuk::where('sumber_type', TransaksiAlat::class)
+                ->where('sumber_id', $pembayaran->transaksi_id)
+                ->where('jenis', 'penyewaan')
+                ->exists();
+
+            if (!$sudahKurangStok) {
+                $pembayaran->transaksi->load('detailTransaksis.alat');
+                foreach ($pembayaran->transaksi->detailTransaksis as $detail) {
+                    if ($detail->alat && $detail->alat->stok > 0) {
+                        $detail->alat->decrement('stok');
+                    }
+                }
+            }
+
             // Insert dana masuk penyewaan jika belum ada
             $sudahAda = DanaMasuk::where('sumber_type', TransaksiAlat::class)
                 ->where('sumber_id', $pembayaran->transaksi_id)

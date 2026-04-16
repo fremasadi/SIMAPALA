@@ -33,9 +33,21 @@ class AlatsTable
                     ->label('Bahan')
                     ->badge()
                     ->separator(',')
-                    ->getStateUsing(fn ($record) => is_array($record->bahan) ? $record->bahan : []),
+                    ->getStateUsing(fn($record) => is_array($record->bahan) ? $record->bahan : []),
                 TextColumn::make('status')
-                    ->badge(),
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        'tersedia' => 'success',
+                        'dipinjam' => 'warning',
+                        'rusak'    => 'danger',
+                        'hilang'   => 'gray',
+                        default    => 'gray',
+                    }),
+                TextColumn::make('stok')
+                    ->label('Stok')
+                    ->badge()
+                    ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
+                    ->sortable(),
                 TextColumn::make('harga_alat')
                     ->label('Harga Alat')
                     ->numeric()
@@ -58,37 +70,7 @@ class AlatsTable
             ])
             ->recordActions([
                 EditAction::make(),
-                Action::make('duplikasi')
-                    ->label('Duplikasi')
-                    ->icon('heroicon-o-document-duplicate')
-                    ->color('info')
-                    ->modalHeading('Duplikasi Data Alat')
-                    ->form([
-                        TextInput::make('kode_alat_prefix')
-                            ->label('Kode Alat')
-                            ->helperText('Jika jumlah > 1, kode otomatis ditambah suffix -1, -2, dst.')
-                            ->required()
-                            ->default(fn ($record) => $record->kode_alat . '-copy'),
-                        TextInput::make('jumlah')
-                            ->label('Jumlah Duplikasi')
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxValue(20)
-                            ->default(1)
-                            ->required(),
-                    ])
-                    ->action(function ($record, array $data) {
-                        $jumlah = (int) $data['jumlah'];
-                        $prefix = $data['kode_alat_prefix'];
 
-                        for ($i = 1; $i <= $jumlah; $i++) {
-                            $kode = $jumlah === 1 ? $prefix : "{$prefix}-{$i}";
-
-                            $record->replicate()
-                                ->fill(['kode_alat' => $kode])
-                                ->save();
-                        }
-                    }),
                 DeleteAction::make(),
             ]);
     }

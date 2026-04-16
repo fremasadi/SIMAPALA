@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Filament\Resources\AlatHilangLogs;
+
+use App\Filament\Resources\AlatHilangLogs\Pages\ListAlatHilangLogs;
+use App\Models\AlatHilangLog;
+use Filament\Resources\Resource;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+
+class AlatHilangLogResource extends Resource
+{
+    protected static ?string $model = AlatHilangLog::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
+
+    protected static ?string $navigationLabel = 'Log Alat Hilang';
+
+    protected static ?string $navigationGroup = 'Manajemen Alat';
+
+    protected static ?int $navigationSort = 3;
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('created_at')
+                    ->label('Tanggal')
+                    ->dateTime('d M Y, H:i')
+                    ->sortable(),
+                TextColumn::make('alat.kode_alat')
+                    ->label('Kode Alat')
+                    ->searchable(),
+                TextColumn::make('alat.nama_alat')
+                    ->label('Nama Alat')
+                    ->searchable(),
+                TextColumn::make('user.name')
+                    ->label('Dihilangkan Oleh')
+                    ->searchable(),
+                TextColumn::make('user.role')
+                    ->label('Peran')
+                    ->badge(),
+                TextColumn::make('transaksi_id')
+                    ->label('Transaksi #')
+                    ->formatStateUsing(fn ($state) => '#' . $state),
+                TextColumn::make('denda')
+                    ->label('Denda')
+                    ->money('IDR')
+                    ->sortable(),
+                TextColumn::make('keterangan')
+                    ->label('Keterangan')
+                    ->limit(60)
+                    ->toggleable(),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->filters([])
+            ->recordActions([]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListAlatHilangLogs::route('/'),
+        ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+}

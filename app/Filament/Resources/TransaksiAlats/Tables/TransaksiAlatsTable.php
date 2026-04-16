@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TransaksiAlats\Tables;
 
 use App\Filament\Resources\TransaksiAlats\TransaksiAlatResource;
+use App\Models\AlatHilangLog;
 use App\Models\DanaMasuk;
 use App\Models\DetailTransaksi;
 use App\Models\TransaksiAlat;
@@ -14,8 +15,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\Action;
 
 
@@ -41,12 +40,14 @@ class TransaksiAlatsTable
                 TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date()->sortable(),
 
                 // Status transaksi (badge)
-                BadgeColumn::make('status')
-                    ->colors([
-                        'warning' => 'pending',
-                        'success' => 'dibayar',
-                        'danger' => ['expired', 'dibatalkan'],
-                    ])
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        'pending'     => 'warning',
+                        'dibayar'     => 'success',
+                        'expired', 'dibatalkan' => 'danger',
+                        default       => 'gray',
+                    })
                     ->label('Status'),
 
                 // Total biaya
@@ -56,13 +57,15 @@ class TransaksiAlatsTable
                 // TextColumn::make('detailTransaksis_count')->label('Jumlah Alat')->counts('detailTransaksis'),
 
                 // Status pembayaran
-                BadgeColumn::make('pembayaran.transaction_status')
+                TextColumn::make('pembayaran.transaction_status')
                     ->label('Status Pembayaran')
-                    ->colors([
-                        'success' => ['settlement', 'capture'],
-                        'warning' => ['pending'],
-                        'danger' => ['cancel', 'deny', 'failure', 'expire'],
-                    ])
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        'settlement', 'capture' => 'success',
+                        'pending'               => 'warning',
+                        'cancel', 'deny', 'failure', 'expire' => 'danger',
+                        default                 => 'gray',
+                    })
                     ->sortable(),
             ])
 
@@ -170,11 +173,31 @@ class TransaksiAlatsTable
                         foreach ($data['detail_items'] as $item) {
                             $dendaRusak = (float) ($item['denda_rusak'] ?? 0);
 
-                            DetailTransaksi::find($item['id'])?->update([
+                            $detail = DetailTransaksi::find($item['id']);
+                            $detail?->update([
                                 'kondisi_kembali' => $item['kondisi_kembali'],
                                 'denda_rusak'     => $dendaRusak,
                                 'denda_telat'     => $dendaTelat,
                             ]);
+
+                            // Kembalikan stok kecuali kondisi hilang
+                            if ($detail && $detail->alat) {
+                                if ($item['kondisi_kembali'] === 'hilang') {
+                                    // Update status alat menjadi hilang
+                                    $detail->alat->update(['status' => 'hilang']);
+
+                                    // Tulis log alat hilang
+                                    AlatHilangLog::create([
+                                        'alat_id'      => $detail->alat_id,
+                                        'user_id'      => $record->user_id,
+                                        'transaksi_id' => $record->id,
+                                        'denda'        => $dendaRusak,
+                                        'keterangan'   => "Alat hilang saat pengembalian — Transaksi #{$record->id}",
+                                    ]);
+                                } else {
+                                    $detail->alat->increment('stok');
+                                }
+                            }
 
                             $totalRusak += $dendaRusak;
                         }
