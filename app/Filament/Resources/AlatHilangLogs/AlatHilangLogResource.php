@@ -4,19 +4,21 @@ namespace App\Filament\Resources\AlatHilangLogs;
 
 use App\Filament\Resources\AlatHilangLogs\Pages\ListAlatHilangLogs;
 use App\Models\AlatHilangLog;
+use BackedEnum;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use UnitEnum;
 
 class AlatHilangLogResource extends Resource
 {
     protected static ?string $model = AlatHilangLog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
 
     protected static ?string $navigationLabel = 'Log Alat Hilang';
 
-    protected static ?string $navigationGroup = 'Manajemen Alat';
+    protected static UnitEnum|string|null $navigationGroup = 'Manajemen Alat';
 
     protected static ?int $navigationSort = 3;
 
