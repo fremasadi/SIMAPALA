@@ -67,10 +67,10 @@ class CartController extends Controller
 
         $alat = Alat::findOrFail($request->alat_id);
 
-        // Cek apakah alat tersedia dan stok mencukupi
-        if ($alat->status !== 'tersedia' || $alat->stok <= 0) {
+        // Cek apakah alat tersedia untuk disewa
+        if ($alat->status !== 'tersedia') {
             return redirect()->back()
-                ->with('error', 'Alat sedang tidak tersedia atau stok habis.')
+                ->with('error', 'Alat sedang tidak tersedia.')
                 ->withFragment('equipment');
         }
 

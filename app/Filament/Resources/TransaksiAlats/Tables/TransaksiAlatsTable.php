@@ -180,7 +180,6 @@ class TransaksiAlatsTable
                                 'denda_telat'     => $dendaTelat,
                             ]);
 
-                            // Kembalikan stok kecuali kondisi hilang
                             if ($detail && $detail->alat) {
                                 if ($item['kondisi_kembali'] === 'hilang') {
                                     // Update status alat menjadi hilang
@@ -194,8 +193,10 @@ class TransaksiAlatsTable
                                         'denda'        => $dendaRusak,
                                         'keterangan'   => "Alat hilang saat pengembalian — Transaksi #{$record->id}",
                                     ]);
+                                } elseif ($item['kondisi_kembali'] === 'rusak') {
+                                    $detail->alat->update(['status' => 'rusak']);
                                 } else {
-                                    $detail->alat->increment('stok');
+                                    $detail->alat->update(['status' => 'tersedia']);
                                 }
                             }
 

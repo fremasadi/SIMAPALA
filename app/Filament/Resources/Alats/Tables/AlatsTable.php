@@ -2,14 +2,11 @@
 
 namespace App\Filament\Resources\Alats\Tables;
 
-use App\Models\Alat;
-use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\ImageColumn;
 
 class AlatsTable
 {
@@ -43,11 +40,6 @@ class AlatsTable
                         'hilang'   => 'gray',
                         default    => 'gray',
                     }),
-                TextColumn::make('stok')
-                    ->label('Stok')
-                    ->badge()
-                    ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
-                    ->sortable(),
                 TextColumn::make('harga_alat')
                     ->label('Harga Alat')
                     ->numeric()
