@@ -18,7 +18,7 @@ Route::get('/', function () {
     $alats = Alat::all()
         ->groupBy('nama_alat')
         ->map(function ($group) {
-            $tersedia = $group->filter(fn ($a) => $a->status === 'tersedia' && $a->stok > 0);
+            $tersedia = $group->filter(fn ($a) => $a->status === 'tersedia');
             $first    = $group->first();
             return (object) [
                 'kode_alat'       => $first->kode_alat,
@@ -27,7 +27,7 @@ Route::get('/', function () {
                 'bahan'           => $first->bahan,
                 'image'           => $first->image,
                 'harga_sewa'      => $first->harga_sewa,
-                'total_tersedia'  => $tersedia->sum('stok'),
+                'total_tersedia'  => $tersedia->count(),
                 'available_id'    => $tersedia->first()?->id,
                 'status'          => $tersedia->isNotEmpty() ? 'tersedia' : 'tidak_tersedia',
             ];
