@@ -65,37 +65,48 @@
                             <table class="w-full">
                                 <thead class="bg-gradient-to-r from-amber-50 to-orange-50">
                                     <tr>
-                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-800">Kode</th>
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-800">Nama Alat</th>
+                                        <th class="px-6 py-4 text-center text-sm font-bold text-gray-800">Jumlah</th>
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-800">Harga / Hari</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-800">Subtotal / Hari</th>
                                         <th class="px-6 py-4 text-center text-sm font-bold text-gray-800">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
-                                    @foreach($cart as $item)
+                                    @php
+                                        $grouped = collect($cart)->groupBy('nama_alat');
+                                    @endphp
+                                    @foreach($grouped as $namaAlat => $items)
                                     <tr class="hover:bg-gray-50 transition">
                                         <td class="px-6 py-4">
-                                            <span class="text-xs font-semibold text-amber-600">{{ $item['kode_alat'] }}</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="font-semibold text-gray-800">{{ $item['nama_alat'] }}</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="font-bold text-gray-800">Rp {{ number_format($item['harga_sewa'], 0, ',', '.') }}</span>
+                                            <span class="font-semibold text-gray-800">{{ $namaAlat }}</span>
+                                            <div class="flex flex-wrap gap-1 mt-1">
+                                                @foreach($items as $item)
+                                                    <span class="text-xs text-amber-600 font-medium bg-amber-50 px-1.5 py-0.5 rounded">{{ $item['kode_alat'] }}</span>
+                                                @endforeach
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 text-center">
-                                            <form action="{{ route('cart.remove', $item['id']) }}" method="POST" class="inline-block">
+                                            <span class="font-bold text-amber-600">{{ $items->count() }} unit</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="font-bold text-gray-800">Rp {{ number_format($items->first()['harga_sewa'], 0, ',', '.') }}</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="font-bold text-gray-800">Rp {{ number_format($items->sum('harga_sewa'), 0, ',', '.') }}</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            @foreach($items as $item)
+                                            <form action="{{ route('cart.remove', $item['id']) }}" method="POST" class="inline-block mb-1">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" 
-                                                        class="inline-flex items-center px-3 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition"
-                                                        onclick="return confirm('Hapus alat dari keranjang?')">
-                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
-                                                    Hapus
+                                                <button type="submit"
+                                                        class="inline-flex items-center px-2 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition"
+                                                        onclick="return confirm('Hapus unit ini dari keranjang?')">
+                                                    {{ $item['kode_alat'] }} ✕
                                                 </button>
                                             </form>
+                                            @endforeach
                                         </td>
                                     </tr>
                                     @endforeach
