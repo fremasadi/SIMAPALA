@@ -58,6 +58,10 @@ class AlatHilangLogResource extends Resource
                     ->label('Foto Bukti')
                     ->disk('public')
                     ->height(60)
+                    ->url(fn ($record) => $record->foto_pembayaran
+                        ? asset("storage/{$record->foto_pembayaran}")
+                        : null)
+                    ->openUrlInNewTab()
                     ->defaultImageUrl(fn () => null)
                     ->toggleable(),
             ])
