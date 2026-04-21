@@ -169,6 +169,7 @@ class TransaksiAlatsTable
                                         FileUpload::make('foto_pembayaran')
                                             ->label('Foto Bukti Pembayaran')
                                             ->image()
+                                            ->disk('public')
                                             ->directory('hilang-pembayaran')
                                             ->acceptedFileTypes(['image/*'])
                                             ->imageEditor()
