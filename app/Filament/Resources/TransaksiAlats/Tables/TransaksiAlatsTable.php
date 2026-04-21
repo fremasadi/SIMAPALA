@@ -104,11 +104,12 @@ class TransaksiAlatsTable
                             0, ',', '.'
                         ),
                         'detail_items' => $record->detailTransaksis->map(fn ($d) => [
-                            'id'             => $d->id,
-                            'alat_nama'      => $d->alat->nama_alat ?? '-',
-                            'harga_alat'     => $d->alat->harga_alat ?? 0,
+                            'id'              => $d->id,
+                            'alat_nama'       => $d->alat->nama_alat ?? '-',
+                            'kode_alat'       => $d->alat->kode_alat ?? '-',
+                            'harga_alat'      => $d->alat->harga_alat ?? 0,
                             'kondisi_kembali' => $d->kondisi_kembali ?? 'baik',
-                            'denda_rusak'    => $d->denda_rusak ?? 0,
+                            'denda_rusak'     => $d->denda_rusak ?? 0,
                         ])->toArray(),
                     ])
                     ->form([
@@ -131,12 +132,15 @@ class TransaksiAlatsTable
                                     ->label('')
                                     ->addable(false)
                                     ->deletable(false)
-                                    ->columns(3)
+                                    ->columns(4)
                                     ->schema([
                                         Hidden::make('id'),
                                         Hidden::make('harga_alat'),
+                                        TextInput::make('kode_alat')
+                                            ->label('Kode Alat')
+                                            ->disabled(),
                                         TextInput::make('alat_nama')
-                                            ->label('Alat')
+                                            ->label('Nama Alat')
                                             ->disabled(),
                                         Select::make('kondisi_kembali')
                                             ->label('Kondisi')
