@@ -15,6 +15,7 @@ class AlatHilangLog extends Model
         'transaksi_id',
         'denda',
         'keterangan',
+        'foto_pembayaran',
     ];
 
     protected $casts = [

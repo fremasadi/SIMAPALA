@@ -6,6 +6,7 @@ use App\Filament\Resources\AlatHilangLogs\Pages\ListAlatHilangLogs;
 use App\Models\AlatHilangLog;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -52,6 +53,12 @@ class AlatHilangLogResource extends Resource
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
                     ->limit(60)
+                    ->toggleable(),
+                ImageColumn::make('foto_pembayaran')
+                    ->label('Foto Bukti')
+                    ->disk('public')
+                    ->height(60)
+                    ->defaultImageUrl(fn () => null)
                     ->toggleable(),
             ])
             ->defaultSort('created_at', 'desc')

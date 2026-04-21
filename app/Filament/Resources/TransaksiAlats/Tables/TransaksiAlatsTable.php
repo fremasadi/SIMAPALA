@@ -7,6 +7,7 @@ use App\Models\AlatHilangLog;
 use App\Models\DanaMasuk;
 use App\Models\DetailTransaksi;
 use App\Models\TransaksiAlat;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -165,6 +166,15 @@ class TransaksiAlatsTable
                                             ->default(0)
                                             ->disabled(fn ($get) => $get('kondisi_kembali') === 'hilang')
                                             ->dehydrated(),
+                                        FileUpload::make('foto_pembayaran')
+                                            ->label('Foto Bukti Pembayaran')
+                                            ->image()
+                                            ->directory('hilang-pembayaran')
+                                            ->acceptedFileTypes(['image/*'])
+                                            ->imageEditor()
+                                            ->columnSpanFull()
+                                            ->visible(fn ($get) => $get('kondisi_kembali') === 'hilang')
+                                            ->nullable(),
                                     ]),
                             ]),
                     ])
@@ -192,11 +202,12 @@ class TransaksiAlatsTable
 
                                     // Tulis log alat hilang
                                     AlatHilangLog::create([
-                                        'alat_id'      => $detail->alat_id,
-                                        'user_id'      => $record->user_id,
-                                        'transaksi_id' => $record->id,
-                                        'denda'        => $dendaRusak,
-                                        'keterangan'   => "Alat hilang saat pengembalian — Transaksi #{$record->id}",
+                                        'alat_id'          => $detail->alat_id,
+                                        'user_id'          => $record->user_id,
+                                        'transaksi_id'     => $record->id,
+                                        'denda'            => $dendaRusak,
+                                        'keterangan'       => "Alat hilang saat pengembalian — Transaksi #{$record->id}",
+                                        'foto_pembayaran'  => $item['foto_pembayaran'] ?? null,
                                     ]);
                                 } elseif ($item['kondisi_kembali'] === 'rusak') {
                                     $detail->alat->update(['status' => 'rusak']);
