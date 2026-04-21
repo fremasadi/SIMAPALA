@@ -37,18 +37,18 @@ class AlatsTable
                     ->getStateUsing(fn($record) => is_array($record->bahan) ? $record->bahan : []),
                 TextColumn::make('status')
                     ->badge()
-                    ->color(fn ($state) => match ($state) {
+                    ->color(fn($state) => match ($state) {
                         'tersedia' => 'success',
                         'dipinjam' => 'warning',
-                        'rusak'    => 'danger',
-                        'hilang'   => 'gray',
-                        default    => 'gray',
+                        'rusak' => 'danger',
+                        'hilang' => 'gray',
+                        default => 'gray',
                     }),
-                TextColumn::make('stok')
-                    ->label('Stok')
-                    ->badge()
-                    ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
-                    ->sortable(),
+                // TextColumn::make('stok')
+                //     ->label('Stok')
+                //     ->badge()
+                //     ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
+                //     ->sortable(),
                 TextColumn::make('harga_alat')
                     ->label('Harga Alat')
                     ->numeric()
@@ -87,7 +87,7 @@ class AlatsTable
                             ->label('Kode Alat')
                             ->helperText('Jika jumlah > 1, kode otomatis ditambah suffix -1, -2, dst.')
                             ->required()
-                            ->default(fn ($record) => $record->kode_alat . '-copy'),
+                            ->default(fn($record) => $record->kode_alat . '-copy'),
                         TextInput::make('jumlah')
                             ->label('Jumlah Duplikasi')
                             ->numeric()
