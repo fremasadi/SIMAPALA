@@ -18,7 +18,7 @@ class AlatHilangLogResource extends Resource
 
     protected static ?string $navigationLabel = 'Log Alat Hilang';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Manajemen Alat';
+    protected static UnitEnum|string|null $navigationGroup = 'Log Alat';
 
     protected static ?int $navigationSort = 3;
 
@@ -44,7 +44,7 @@ class AlatHilangLogResource extends Resource
                     ->badge(),
                 TextColumn::make('transaksi_id')
                     ->label('Transaksi #')
-                    ->formatStateUsing(fn ($state) => '#' . $state),
+                    ->formatStateUsing(fn($state) => '#' . $state),
                 TextColumn::make('denda')
                     ->label('Denda')
                     ->money('IDR')
