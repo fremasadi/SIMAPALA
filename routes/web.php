@@ -15,7 +15,25 @@ use App\Models\Alat;
 */
 
 Route::get('/', function () {
-    $alats = Alat::where('status', 'tersedia')->get();
+    $alats = Alat::all()
+        ->groupBy('nama_alat')
+        ->map(function ($group) {
+            $tersedia = $group->filter(fn ($a) => $a->status === 'tersedia' && $a->stok > 0);
+            $first    = $group->first();
+            return (object) [
+                'kode_alat'       => $first->kode_alat,
+                'nama_alat'       => $first->nama_alat,
+                'ukuran'          => $first->ukuran,
+                'bahan'           => $first->bahan,
+                'image'           => $first->image,
+                'harga_sewa'      => $first->harga_sewa,
+                'total_tersedia'  => $tersedia->sum('stok'),
+                'available_id'    => $tersedia->first()?->id,
+                'status'          => $tersedia->isNotEmpty() ? 'tersedia' : 'tidak_tersedia',
+            ];
+        })
+        ->values();
+
     return view('welcome', compact('alats'));
 })->name('home');
 

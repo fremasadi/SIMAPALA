@@ -272,19 +272,21 @@
                                     <p class="text-xs font-semibold text-yellow-600 mb-1">{{ $alat->kode_alat }}</p>
                                     <h3 class="text-lg font-bold text-gray-800 mb-2">{{ $alat->nama_alat }}</h3>
                                 </div>
-                                @if ($alat->status == 'tersedia')
-                                    <span
-                                        class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full border border-green-300">Tersedia</span>
-                                @elseif($alat->status == 'dipinjam')
-                                    <span
-                                        class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full border border-blue-300">Dipinjam</span>
-                                @elseif($alat->status == 'rusak')
-                                    <span
-                                        class="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full border border-red-300">Rusak</span>
+                                @if ($alat->status === 'tersedia')
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full border border-green-300">Tersedia</span>
                                 @else
-                                    <span
-                                        class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full border border-gray-300">Hilang</span>
+                                    <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full border border-gray-300">Tidak Tersedia</span>
                                 @endif
+                            </div>
+
+                            <!-- Stok Info -->
+                            <div class="mb-3">
+                                <span class="inline-flex items-center text-xs font-medium {{ $alat->total_tersedia > 0 ? 'text-green-700' : 'text-red-600' }}">
+                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                    </svg>
+                                    Stok tersedia: {{ $alat->total_tersedia }} unit
+                                </span>
                             </div>
 
                             <!-- Price Section -->
@@ -292,22 +294,20 @@
                                 <div class="flex justify-between items-center mb-4">
                                     <div>
                                         <p class="text-xs text-gray-600 font-medium">Harga Sewa</p>
-                                        <p class="text-2xl font-bold text-yellow-600">Rp
-                                            {{ number_format($alat->harga_sewa, 0, ',', '.') }}</p>
+                                        <p class="text-2xl font-bold text-yellow-600">Rp {{ number_format($alat->harga_sewa, 0, ',', '.') }}</p>
                                         <p class="text-xs text-gray-500">per hari</p>
                                     </div>
                                 </div>
 
                                 <!-- Button Section -->
-                                @if ($alat->status == 'tersedia')
+                                @if ($alat->status === 'tersedia')
                                     @auth
                                         <form action="{{ route('cart.add') }}" method="POST" class="w-full">
                                             @csrf
-                                            <input type="hidden" name="alat_id" value="{{ $alat->id }}">
+                                            <input type="hidden" name="alat_id" value="{{ $alat->available_id }}">
                                             <button type="submit"
                                                 class="w-full px-4 py-2.5 bg-yellow-500 text-gray-900 rounded-lg hover:bg-yellow-400 transition font-bold flex items-center justify-center space-x-2 shadow-md">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                                 </svg>
@@ -323,7 +323,7 @@
                                 @else
                                     <button disabled
                                         class="w-full px-4 py-2.5 bg-gray-300 text-gray-600 rounded-lg cursor-not-allowed font-medium">
-                                        Tidak Tersedia
+                                        Stok Habis
                                     </button>
                                 @endif
                             </div>
