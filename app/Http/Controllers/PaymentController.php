@@ -49,7 +49,7 @@ class PaymentController extends Controller
                 'tanggal_ajuan' => now(),
                 'tanggal_pinjam' => $validated['tanggal_pinjam'],
                 'tanggal_kembali' => $validated['tanggal_kembali'],
-                'status' => 'menunggu_pembayaran',
+                'status' => 'menunggu',
                 'total_biaya' => $validated['total_biaya'],
             ]);
 
