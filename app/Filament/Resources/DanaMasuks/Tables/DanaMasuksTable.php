@@ -35,6 +35,11 @@ class DanaMasuksTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'approved' => 'Diterima',
+                        'pending'  => 'Menunggu',
+                        default    => ucfirst($state),
+                    })
                     ->color(fn ($state) => match ($state) {
                         'approved' => 'success',
                         'pending'  => 'warning',
@@ -61,8 +66,8 @@ class DanaMasuksTable
                 SelectFilter::make('status')
                     ->label('Status')
                     ->options([
-                        'pending'  => 'Pending',
-                        'approved' => 'Approved',
+                        // 'pending'  => 'Menunggu',
+                        'approved' => 'Diterima',
                     ])
                     ->placeholder('Semua Status'),
 
@@ -115,7 +120,11 @@ class DanaMasuksTable
                                 'Nominal (Rp)'  => $row->nominal,
                                 'Keterangan'    => $row->keterangan,
                                 'Tanggal'       => $row->tanggal?->format('d/m/Y'),
-                                'Status'        => ucfirst($row->status),
+                                'Status'        => match ($row->status) {
+                                    'approved' => 'Diterima',
+                                    'pending'  => 'Menunggu',
+                                    default    => ucfirst($row->status),
+                                },
                                 'Diinput Oleh'  => $row->user?->name,
                             ]);
 

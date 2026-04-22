@@ -45,7 +45,7 @@ class DanaMasukWidget extends BaseWidget
                 ->icon('heroicon-o-wallet'),
 
             Stat::make('Penyewaan Alat', $fmt($penyewaan))
-                ->description('Pembayaran settlement')
+                ->description('Pembayaran Berhasil')
                 ->descriptionIcon('heroicon-m-archive-box')
                 ->color('info')
                 ->icon('heroicon-o-archive-box'),

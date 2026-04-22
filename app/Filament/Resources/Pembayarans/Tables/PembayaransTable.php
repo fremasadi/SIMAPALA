@@ -35,7 +35,22 @@ class PembayaransTable
                     ->searchable(),
                 TextColumn::make('transaction_status')
                     ->label('Status Transaksi')
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'settlement', 'capture' => 'Lunas',
+                        'pending'               => 'Menunggu',
+                        'cancel'                => 'Dibatalkan',
+                        'deny'                  => 'Ditolak',
+                        'failure'               => 'Gagal',
+                        'expire'                => 'Kadaluarsa',
+                        default                 => ucfirst($state),
+                    })
+                    ->color(fn ($state) => match ($state) {
+                        'settlement', 'capture' => 'success',
+                        'pending'               => 'warning',
+                        'cancel', 'deny', 'failure', 'expire' => 'danger',
+                        default                 => 'gray',
+                    }),
                 TextColumn::make('transaction_time')
                     ->label('Waktu Transaksi')
                     ->dateTime()

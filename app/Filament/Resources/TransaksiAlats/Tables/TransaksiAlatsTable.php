@@ -61,6 +61,15 @@ class TransaksiAlatsTable
                 TextColumn::make('pembayaran.transaction_status')
                     ->label('Status Pembayaran')
                     ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'settlement', 'capture' => 'Lunas',
+                        'pending'               => 'Menunggu',
+                        'cancel'                => 'Dibatalkan',
+                        'deny'                  => 'Ditolak',
+                        'failure'               => 'Gagal',
+                        'expire'                => 'Kadaluarsa',
+                        default                 => ucfirst($state),
+                    })
                     ->color(fn ($state) => match ($state) {
                         'settlement', 'capture' => 'success',
                         'pending'               => 'warning',

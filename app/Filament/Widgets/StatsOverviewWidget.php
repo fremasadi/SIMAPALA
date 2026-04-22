@@ -53,16 +53,16 @@ class StatsOverviewWidget extends BaseWidget
                 ->icon('heroicon-o-clipboard-document-list'),
 
             Stat::make('Kas Menunggu Verifikasi', $kasPending)
-                ->description('Pembayaran kas pending')
+                ->description('Pembayaran kas menunggu')
                 ->descriptionIcon('heroicon-m-clock')
                 ->color($kasPending > 0 ? 'warning' : 'success')
                 ->icon('heroicon-o-banknotes'),
 
-            Stat::make('Sumbangan Pending', $sumbanganPending)
-                ->description('Menunggu approval admin')
-                ->descriptionIcon('heroicon-m-heart')
-                ->color($sumbanganPending > 0 ? 'warning' : 'success')
-                ->icon('heroicon-o-heart'),
+            // Stat::make('Sumbangan Pending', $sumbanganPending)
+            //     ->description('Menunggu approval admin')
+            //     ->descriptionIcon('heroicon-m-heart')
+            //     ->color($sumbanganPending > 0 ? 'warning' : 'success')
+            //     ->icon('heroicon-o-heart'),
         ];
     }
 }
