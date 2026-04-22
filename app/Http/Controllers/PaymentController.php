@@ -49,7 +49,7 @@ class PaymentController extends Controller
                 'tanggal_ajuan' => now(),
                 'tanggal_pinjam' => $validated['tanggal_pinjam'],
                 'tanggal_kembali' => $validated['tanggal_kembali'],
-                'status' => 'menunggu',
+                'status' => 'menunggu_pembayaran',
                 'total_biaya' => $validated['total_biaya'],
             ]);
 
@@ -307,10 +307,18 @@ class PaymentController extends Controller
         if ($transactionStatus === 'settlement' || $transactionStatus === 'capture') {
             $updateData['settlement_time'] = now();
 
+            $pembayaran->loadMissing('transaksi.detailTransaksis.alat');
+
             // Update transaksi status menjadi disetujui (siap diambil)
             $pembayaran->transaksi->update([
                 'status' => 'disetujui',
             ]);
+
+            foreach ($pembayaran->transaksi->detailTransaksis as $detail) {
+                $detail->alat?->update([
+                    'status' => 'dipinjam',
+                ]);
+            }
 
             // Insert dana masuk penyewaan jika belum ada
             $sudahAda = DanaMasuk::where('sumber_type', TransaksiAlat::class)
@@ -331,14 +339,17 @@ class PaymentController extends Controller
                 ]);
             }
 
-            Log::info('Payment settled, transaksi updated to disetujui', [
+            Log::info('Payment settled, transaksi and alat statuses updated', [
                 'transaksi_id' => $pembayaran->transaksi_id,
-                'order_id' => $pembayaran->order_id
+                'order_id' => $pembayaran->order_id,
+                'alat_count' => $pembayaran->transaksi->detailTransaksis->count(),
             ]);
         }
 
         // Jika pembayaran gagal/expired/cancel
         if (in_array($transactionStatus, ['deny', 'expire', 'cancel', 'failure'])) {
+            $pembayaran->loadMissing('transaksi');
+
             $pembayaran->transaksi->update([
                 'status' => 'dibatalkan',
             ]);

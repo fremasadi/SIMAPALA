@@ -245,6 +245,10 @@
                                         <div class="flex items-center">
                                             @php
                                                 $statusConfig = [
+                                                    'menunggu' => [
+                                                        'class' => 'bg-yellow-100 text-yellow-800 border-yellow-300',
+                                                        'label' => 'Menunggu Pembayaran',
+                                                    ],
                                                     'menunggu_pembayaran' => [
                                                         'class' => 'bg-yellow-100 text-yellow-800 border-yellow-300',
                                                         'label' => 'Menunggu Pembayaran',
@@ -304,14 +308,14 @@
                                                 Lihat Detail
                                             </a>
 
-                                            @if ($transaction->status === 'menunggu' && $transaction->pembayaran)
+                                            @if (in_array($transaction->status, ['menunggu', 'menunggu_pembayaran'], true) && $transaction->pembayaran)
                                                 <a href="{{ $transaction->pembayaran->payment_url }}"
                                                     class="px-6 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-semibold text-center shadow-md">
                                                     Bayar Sekarang
                                                 </a>
                                             @endif
 
-                                            @if ($transaction->status === 'menunggu')
+                                            @if (in_array($transaction->status, ['menunggu', 'menunggu_pembayaran'], true))
                                                 <form action="{{ route('transactions.cancel', $transaction->id) }}"
                                                     method="POST" class="inline-block">
                                                     @csrf

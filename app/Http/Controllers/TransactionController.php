@@ -20,7 +20,11 @@ class TransactionController extends Controller
 
         // Filter by status
         if ($request->has('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            if ($request->status === 'menunggu_pembayaran') {
+                $query->whereIn('status', ['menunggu', 'menunggu_pembayaran']);
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
         // Filter by date range
@@ -63,8 +67,8 @@ class TransactionController extends Controller
     {
         $transaction = TransaksiAlat::where('user_id', Auth::id())->findOrFail($id);
 
-        // Only allow cancel if status is menunggu_pembayaran
-        if ($transaction->status !== 'menunggu_pembayaran') {
+        // Only allow cancel if payment is still waiting.
+        if (! in_array($transaction->status, ['menunggu', 'menunggu_pembayaran'], true)) {
             return back()->with('error', 'Transaksi tidak dapat dibatalkan');
         }
 

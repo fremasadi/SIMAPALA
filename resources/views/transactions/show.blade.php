@@ -35,6 +35,7 @@
                         <p class="text-sm text-gray-600 mb-2 font-medium">Status Transaksi</p>
                         @php
                             $statusConfig = [
+                                'menunggu' => ['class' => 'bg-yellow-100 text-yellow-800 border-yellow-300', 'label' => 'Menunggu Pembayaran'],
                                 'menunggu_pembayaran' => ['class' => 'bg-yellow-100 text-yellow-800 border-yellow-300', 'label' => 'Menunggu Pembayaran'],
                                 'disetujui' => ['class' => 'bg-blue-100 text-blue-800 border-blue-300', 'label' => 'Disetujui - Siap Diambil'],
                                 'dipinjam' => ['class' => 'bg-purple-100 text-purple-800 border-purple-300', 'label' => 'Sedang Dipinjam'],
@@ -48,7 +49,7 @@
                         </span>
                     </div>
 
-                    @if($transaction->status === 'menunggu_pembayaran' && $transaction->pembayaran)
+                    @if(in_array($transaction->status, ['menunggu', 'menunggu_pembayaran'], true) && $transaction->pembayaran)
                         <a href="{{ route('payment.show', $transaction->pembayaran->id) }}"
                            class="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-semibold shadow-md">
                             <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,7 +219,7 @@
                     </div>
 
                     {{-- Action Buttons --}}
-                    @if($transaction->status === 'menunggu')
+                    @if(in_array($transaction->status, ['menunggu', 'menunggu_pembayaran'], true))
                         @if($transaction->pembayaran)
                             <a href="{{ $transaction->pembayaran->payment_url }}"
                                class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition font-bold text-center shadow-lg mb-3">
