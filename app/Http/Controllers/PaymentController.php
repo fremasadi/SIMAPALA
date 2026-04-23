@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DanaMasuk;
+use App\Models\KasPembayaran;
 use App\Models\Pembayaran;
 use App\Models\TransaksiAlat;
 use App\Services\MidtransService;
@@ -180,6 +181,15 @@ class PaymentController extends Controller
         $pembayaran = Pembayaran::where('order_id', $request->order_id)->first();
 
         if (!$pembayaran) {
+            $kasPembayaran = KasPembayaran::where('order_id', $request->order_id)->first();
+
+            if ($kasPembayaran) {
+                app(\App\Http\Controllers\Api\V1\KasPembayaranController::class)
+                    ->updateFromMidtransNotification($kasPembayaran, $request->all());
+
+                return response()->json(['message' => 'Kas payment callback processed']);
+            }
+
             return response()->json(['message' => 'Payment not found'], 404);
         }
 
@@ -197,6 +207,24 @@ class PaymentController extends Controller
         $pembayaran = Pembayaran::where('order_id', $orderId)->first();
 
         if (!$pembayaran) {
+            $kasPembayaran = KasPembayaran::where('order_id', $orderId)->first();
+
+            if ($kasPembayaran) {
+                $statusResult = $this->midtrans->getTransactionStatus($orderId);
+
+                if ($statusResult['success']) {
+                    app(\App\Http\Controllers\Api\V1\KasPembayaranController::class)
+                        ->updateFromMidtransNotification($kasPembayaran, $statusResult['data']);
+                    $kasPembayaran->refresh();
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Status pembayaran kas diperbarui',
+                    'data' => $kasPembayaran->load('kasBulanan'),
+                ]);
+            }
+
             return redirect()->route('home')->with('error', 'Pembayaran tidak ditemukan');
         }
 

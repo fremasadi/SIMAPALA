@@ -17,6 +17,8 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/kas-pembayaran/callback', [KasPembayaranController::class, 'callback'])->name('kas-pembayaran.callback');
+Route::get('/kas-pembayaran/finish', [KasPembayaranController::class, 'finish'])->name('kas-pembayaran.finish');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -50,5 +52,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Kas Pembayaran
     Route::get('/kas-pembayaran', [KasPembayaranController::class, 'index']);
     Route::post('/kas-pembayaran', [KasPembayaranController::class, 'store']);
+    Route::get('/kas-pembayaran/{id}/status', [KasPembayaranController::class, 'checkStatus']);
     Route::get('/kas-pembayaran/{id}', [KasPembayaranController::class, 'show']);
 });

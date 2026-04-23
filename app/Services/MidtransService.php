@@ -19,7 +19,7 @@ class MidtransService
     /**
      * Create Snap Token
      */
-    public function createTransaction($orderId, $grossAmount, $customerDetails, $itemDetails)
+    public function createTransaction($orderId, $grossAmount, $customerDetails, $itemDetails, ?string $finishUrl = null)
     {
         $params = [
             'transaction_details' => [
@@ -40,7 +40,7 @@ class MidtransService
                 'qris',
             ],
             'callbacks' => [
-                'finish' => route('payment.finish'),
+                'finish' => $finishUrl ?? route('payment.finish'),
             ],
         ];
 

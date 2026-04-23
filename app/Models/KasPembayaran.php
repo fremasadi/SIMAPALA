@@ -18,6 +18,18 @@ class KasPembayaran extends Model
         'status',
         'tanggal_bayar',
         'keterangan',
+        'order_id',
+        'transaction_id',
+        'transaction_status',
+        'fraud_status',
+        'payment_type',
+        'payment_url',
+        'snap_token',
+        'bank',
+        'va_number',
+        'transaction_time',
+        'settlement_time',
+        'midtrans_response',
         'verified_by',
         'verified_at',
     ];
@@ -25,6 +37,9 @@ class KasPembayaran extends Model
     protected $casts = [
         'nominal' => 'float',
         'tanggal_bayar' => 'date',
+        'transaction_time' => 'datetime',
+        'settlement_time' => 'datetime',
+        'midtrans_response' => 'array',
         'verified_at' => 'datetime',
     ];
 
