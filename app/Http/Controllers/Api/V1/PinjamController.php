@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\APi\V1;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,51 +11,56 @@ use App\Models\Alat;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class PinjamController extends Controller
 {
     public function index()
-{
-    $transaksis = TransaksiAlat::with([
+    {
+        $transaksis = TransaksiAlat::with([
             'detailTransaksis.alat'
         ])
         ->where('user_id', Auth::id())
         ->orderBy('id', 'desc')
         ->get();
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Riwayat transaksi',
-        'data' => $transaksis,
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'Riwayat transaksi',
+            'data' => $transaksis,
+        ]);
+    }
 
-public function show($id)
-{
-    $transaksi = TransaksiAlat::with([
+    public function show($id)
+    {
+        $transaksi = TransaksiAlat::with([
             'detailTransaksis.alat'
         ])
         ->where('id', $id)
         ->where('user_id', Auth::id())
         ->first();
 
-    if (! $transaksi) {
+        if (! $transaksi) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaksi tidak ditemukan',
+            ], 404);
+        }
+
         return response()->json([
-            'success' => false,
-            'message' => 'Transaksi tidak ditemukan',
-        ], 404);
+            'success' => true,
+            'message' => 'Detail transaksi',
+            'data' => $transaksi,
+        ]);
     }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Detail transaksi',
-        'data' => $transaksi,
-    ]);
-}
-
 
     /**
      * pinjam alat (gratis untuk anggota)
+     *
+     * Format yang didukung:
+     * - alat_id + jumlah, seperti form alat di welcome.blade.php
+     * - items: [{ alat_id, jumlah }], untuk beberapa jenis alat
+     * - alat_ids: [1, 2, 3], format lama untuk memilih unit spesifik
      */
     public function pinjam(Request $request)
     {
@@ -67,11 +72,25 @@ public function show($id)
         $request->validate([
             'tanggal_pinjam'   => 'required|date',
             'tanggal_kembali'  => 'required|date|after_or_equal:tanggal_pinjam',
-            'alat_ids'         => 'required|array|min:1',
-            'alat_ids.*'       => 'exists:alats,id',
+            'alat_id'          => 'nullable|integer|exists:alats,id',
+            'jumlah'           => 'nullable|integer|min:1',
+            'items'            => 'nullable|array|min:1',
+            'items.*.alat_id'  => 'required_with:items|integer|exists:alats,id',
+            'items.*.jumlah'   => 'required_with:items|integer|min:1',
+            'alat_ids'         => 'nullable|array|min:1',
+            'alat_ids.*'       => 'integer|exists:alats,id',
         ]);
 
+        if (! $request->filled('alat_id') && ! $request->filled('items') && ! $request->filled('alat_ids')) {
+            throw ValidationException::withMessages([
+                'alat' => 'Pilih minimal satu alat untuk dipinjam.',
+            ]);
+        }
+
         Log::info('Pinjam: validasi lolos', [
+            'alat_id'         => $request->alat_id,
+            'jumlah'          => $request->jumlah,
+            'items'           => $request->items,
             'alat_ids'        => $request->alat_ids,
             'tanggal_pinjam'  => $request->tanggal_pinjam,
             'tanggal_kembali' => $request->tanggal_kembali,
@@ -80,6 +99,8 @@ public function show($id)
         DB::beginTransaction();
 
         try {
+            $alats = $this->resolveAlatPinjaman($request);
+
             // Buat transaksi
             $transaksi = TransaksiAlat::create([
                 'user_id'         => Auth::id(),
@@ -94,15 +115,15 @@ public function show($id)
             Log::info('Pinjam: transaksi dibuat', ['transaksi_id' => $transaksi->id]);
 
             // Simpan detail alat
-            foreach ($request->alat_ids as $alatId) {
+            foreach ($alats as $alat) {
                 DetailTransaksi::create([
                     'transaksi_id' => $transaksi->id,
-                    'alat_id'      => $alatId,
+                    'alat_id'      => $alat->id,
                 ]);
 
-                Alat::where('id', $alatId)->update(['status' => 'dipinjam']);
+                $alat->update(['status' => 'dipinjam']);
 
-                Log::info('Pinjam: detail alat disimpan', ['alat_id' => $alatId]);
+                Log::info('Pinjam: detail alat disimpan', ['alat_id' => $alat->id]);
             }
 
             // Auto insert pembayaran settlement (pinjam = gratis)
@@ -132,9 +153,15 @@ public function show($id)
                     'transaksi_id' => $transaksi->id,
                     'status'       => $transaksi->fresh()->status,
                     'total_biaya'  => $transaksi->total_biaya,
+                    'jumlah_alat'  => $alats->count(),
+                    'alat_ids'     => $alats->pluck('id')->values(),
                 ],
             ], 201);
 
+        } catch (ValidationException $e) {
+            DB::rollBack();
+
+            throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -150,5 +177,92 @@ public function show($id)
                 'error'   => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Ambil unit fisik yang tersedia.
+     *
+     * Jika request berisi alat_id + jumlah, alat_id dipakai sebagai contoh jenis
+     * alat, lalu sistem mengambil unit tersedia lain dengan nama_alat yang sama.
+     */
+    private function resolveAlatPinjaman(Request $request)
+    {
+        $selected = collect();
+        $selectedIds = [];
+
+        foreach ($request->input('alat_ids', []) as $alatId) {
+            if (in_array((int) $alatId, $selectedIds, true)) {
+                throw ValidationException::withMessages([
+                    'alat_ids' => 'Alat yang sama tidak boleh dipilih lebih dari satu kali.',
+                ]);
+            }
+
+            $alat = Alat::whereKey($alatId)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $alat || $alat->status !== 'tersedia') {
+                throw ValidationException::withMessages([
+                    'alat_ids' => 'Salah satu alat yang dipilih sedang tidak tersedia.',
+                ]);
+            }
+
+            $selected->push($alat);
+            $selectedIds[] = (int) $alat->id;
+        }
+
+        $requests = [];
+
+        if ($request->filled('alat_id')) {
+            $requests[] = [
+                'alat_id' => (int) $request->input('alat_id'),
+                'jumlah'  => (int) $request->input('jumlah', 1),
+            ];
+        }
+
+        foreach ($request->input('items', []) as $item) {
+            $requests[] = [
+                'alat_id' => (int) $item['alat_id'],
+                'jumlah'  => (int) $item['jumlah'],
+            ];
+        }
+
+        foreach ($requests as $item) {
+            $contohAlat = Alat::find($item['alat_id']);
+            $jumlah = max(1, (int) $item['jumlah']);
+
+            if (! $contohAlat) {
+                throw ValidationException::withMessages([
+                    'alat_id' => 'Alat tidak ditemukan.',
+                ]);
+            }
+
+            $unitTersedia = Alat::where('nama_alat', $contohAlat->nama_alat)
+                ->where('status', 'tersedia')
+                ->whereNotIn('id', $selectedIds)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->take($jumlah)
+                ->get();
+
+            if ($unitTersedia->count() < $jumlah) {
+                throw ValidationException::withMessages([
+                    'jumlah' => "Stok {$contohAlat->nama_alat} tidak mencukupi. Tersedia hanya {$unitTersedia->count()} unit.",
+                ]);
+            }
+
+            foreach ($unitTersedia as $alat) {
+                $selected->push($alat);
+                $selectedIds[] = (int) $alat->id;
+            }
+        }
+
+        if ($selected->isEmpty()) {
+            throw ValidationException::withMessages([
+                'alat' => 'Pilih minimal satu alat untuk dipinjam.',
+            ]);
+        }
+
+        return $selected;
     }
 }

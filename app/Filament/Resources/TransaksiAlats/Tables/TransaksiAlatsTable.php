@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TransaksiAlats\Tables;
 
 use App\Filament\Resources\TransaksiAlats\TransaksiAlatResource;
 use App\Models\AlatHilangLog;
+use App\Models\AlatRusakLog;
 use App\Models\DanaMasuk;
 use App\Models\DetailTransaksi;
 use App\Models\TransaksiAlat;
@@ -221,6 +222,15 @@ class TransaksiAlatsTable
                                     ]);
                                 } elseif ($item['kondisi_kembali'] === 'rusak') {
                                     $detail->alat->update(['status' => 'rusak']);
+
+                                    AlatRusakLog::create([
+                                        'alat_id'              => $detail->alat_id,
+                                        'user_id'              => $record->user_id,
+                                        'transaksi_id'         => $record->id,
+                                        'detail_transaksi_id'  => $detail->id,
+                                        'denda'                => $dendaRusak,
+                                        'keterangan'           => "Alat rusak saat pengembalian - Transaksi #{$record->id}",
+                                    ]);
                                 } else {
                                     $detail->alat->update(['status' => 'tersedia']);
                                 }

@@ -24,6 +24,7 @@ class FreshTransaksiAlatData extends Command
         }
 
         $tables = [
+            'alat_rusak_logs',
             'alat_hilang_logs',
             'detail_transaksis',
             'pembayarans',
