@@ -13,6 +13,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -141,6 +142,7 @@ class TransaksiAlatsTable
                             'harga_alat'      => $d->alat->harga_alat ?? 0,
                             'kondisi_kembali' => $d->kondisi_kembali ?? 'baik',
                             'denda_rusak'     => $d->denda_rusak ?? 0,
+                            'keterangan'      => $d->keterangan,
                         ])->toArray(),
                     ])
                     ->form([
@@ -196,6 +198,14 @@ class TransaksiAlatsTable
                                             ->default(0)
                                             ->disabled(fn ($get) => $get('kondisi_kembali') === 'hilang')
                                             ->dehydrated(),
+                                        Textarea::make('keterangan')
+                                            ->label('Catatan Kerusakan')
+                                            ->placeholder('Contoh: robek 5 cm di bagian atas')
+                                            ->rows(3)
+                                            ->columnSpanFull()
+                                            ->visible(fn ($get) => $get('kondisi_kembali') === 'rusak')
+                                            ->required(fn ($get) => $get('kondisi_kembali') === 'rusak')
+                                            ->dehydrated(),
                                         FileUpload::make('foto_pembayaran')
                                             ->label('Foto Bukti Pembayaran')
                                             ->image()
@@ -224,6 +234,7 @@ class TransaksiAlatsTable
                                 'kondisi_kembali' => $item['kondisi_kembali'],
                                 'denda_rusak'     => $dendaRusak,
                                 'denda_telat'     => $dendaTelat,
+                                'keterangan'      => $item['keterangan'] ?? null,
                             ]);
 
                             if ($detail && $detail->alat) {
@@ -249,7 +260,7 @@ class TransaksiAlatsTable
                                         'transaksi_id'         => $record->id,
                                         'detail_transaksi_id'  => $detail->id,
                                         'denda'                => $dendaRusak,
-                                        'keterangan'           => "Alat rusak saat pengembalian - Transaksi #{$record->id}",
+                                        'keterangan'           => $item['keterangan'] ?? "Alat rusak saat pengembalian - Transaksi #{$record->id}",
                                     ]);
                                 } else {
                                     $detail->alat->update(['status' => 'tersedia']);
