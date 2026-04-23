@@ -62,14 +62,16 @@ class TransaksiAlatsTable
                 TextColumn::make('pembayaran.transaction_status')
                     ->label('Status Pembayaran')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'settlement', 'capture' => 'Lunas',
-                        'pending'               => 'Menunggu',
-                        'cancel'                => 'Dibatalkan',
-                        'deny'                  => 'Ditolak',
-                        'failure'               => 'Gagal',
-                        'expire'                => 'Kadaluarsa',
-                        default                 => ucfirst($state),
+                    ->formatStateUsing(fn ($state, TransaksiAlat $record) => match ($state) {
+                        'settlement', 'capture' => (float) $record->total_biaya === 0.0
+                            ? 'Lunas (Anggota)'
+                            : 'Lunas',
+                        'pending' => 'Menunggu',
+                        'cancel' => 'Dibatalkan',
+                        'deny' => 'Ditolak',
+                        'failure' => 'Gagal',
+                        'expire' => 'Kadaluarsa',
+                        default => ucfirst($state),
                     })
                     ->color(fn ($state) => match ($state) {
                         'settlement', 'capture' => 'success',
@@ -89,6 +91,16 @@ class TransaksiAlatsTable
                     ->icon('heroicon-o-eye')
                     ->url(fn ($record) => TransaksiAlatResource::getUrl('view', ['record' => $record])),
 
+                Action::make('acc')
+                    ->label('ACC')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn (TransaksiAlat $record) => $record->status === 'menunggu')
+                    ->requiresConfirmation()
+                    ->modalHeading('ACC Peminjaman')
+                    ->modalDescription('Setujui pengajuan peminjaman alat ini?')
+                    ->action(fn (TransaksiAlat $record) => $record->update(['status' => 'disetujui'])),
+
                 Action::make('dipinjam')
                     ->label('Pinjam')
                     ->icon('heroicon-o-arrow-up-tray')
@@ -97,7 +109,15 @@ class TransaksiAlatsTable
                     ->requiresConfirmation()
                     ->modalHeading('Konfirmasi Peminjaman')
                     ->modalDescription('Tandai transaksi ini sebagai sedang dipinjam?')
-                    ->action(fn (TransaksiAlat $record) => $record->update(['status' => 'dipinjam'])),
+                    ->action(function (TransaksiAlat $record) {
+                        $record->loadMissing('detailTransaksis.alat');
+
+                        foreach ($record->detailTransaksis as $detail) {
+                            $detail->alat?->update(['status' => 'dipinjam']);
+                        }
+
+                        $record->update(['status' => 'dipinjam']);
+                    }),
 
                 Action::make('kembalikan')
                     ->label('Kembalikan')

@@ -167,8 +167,6 @@ class PinjamController extends Controller
                     'alat_id'      => $alat->id,
                 ]);
 
-                $alat->update(['status' => 'dipinjam']);
-
                 Log::info('Pinjam: detail alat disimpan', ['alat_id' => $alat->id]);
             }
 
@@ -184,11 +182,6 @@ class PinjamController extends Controller
             ]);
 
             Log::info('Pinjam: pembayaran dibuat', ['pembayaran_id' => $pembayaran->id]);
-
-            // Update status transaksi menjadi disetujui
-            $transaksi->update(['status' => 'disetujui']);
-
-            Log::info('Pinjam: transaksi disetujui', ['transaksi_id' => $transaksi->id]);
 
             DB::commit();
 
