@@ -17,16 +17,25 @@ class PinjamController extends Controller
 {
     public function index()
     {
-        $transaksis = TransaksiAlat::with([
-            'detailTransaksis.alat'
-        ])
+        $transaksis = TransaksiAlat::withCount('detailTransaksis')
         ->where('user_id', Auth::id())
+        ->where('jenis_transaksi', 'pinjam')
         ->orderBy('id', 'desc')
-        ->get();
+        ->get()
+        ->map(fn (TransaksiAlat $transaksi) => [
+            'id' => $transaksi->id,
+            'jenis_transaksi' => $transaksi->jenis_transaksi,
+            'tanggal_ajuan' => $transaksi->tanggal_ajuan?->toDateString(),
+            'tanggal_pinjam' => $transaksi->tanggal_pinjam?->toDateString(),
+            'tanggal_kembali' => $transaksi->tanggal_kembali?->toDateString(),
+            'status' => $transaksi->status,
+            'total_biaya' => $transaksi->total_biaya,
+            'jumlah_alat' => $transaksi->detail_transaksis_count,
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Riwayat transaksi',
+            'message' => 'Riwayat pinjam alat',
             'data' => $transaksis,
         ]);
     }
@@ -34,10 +43,12 @@ class PinjamController extends Controller
     public function show($id)
     {
         $transaksi = TransaksiAlat::with([
-            'detailTransaksis.alat'
+            'detailTransaksis.alat',
+            'pembayaran',
         ])
         ->where('id', $id)
         ->where('user_id', Auth::id())
+        ->where('jenis_transaksi', 'pinjam')
         ->first();
 
         if (! $transaksi) {
@@ -49,8 +60,43 @@ class PinjamController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Detail transaksi',
-            'data' => $transaksi,
+            'message' => 'Detail pinjam alat',
+            'data' => [
+                'id' => $transaksi->id,
+                'jenis_transaksi' => $transaksi->jenis_transaksi,
+                'tanggal_ajuan' => $transaksi->tanggal_ajuan?->toDateString(),
+                'tanggal_pinjam' => $transaksi->tanggal_pinjam?->toDateString(),
+                'tanggal_kembali' => $transaksi->tanggal_kembali?->toDateString(),
+                'status' => $transaksi->status,
+                'total_biaya' => $transaksi->total_biaya,
+                'jumlah_alat' => $transaksi->detailTransaksis->count(),
+                'pembayaran' => $transaksi->pembayaran ? [
+                    'id' => $transaksi->pembayaran->id,
+                    'order_id' => $transaksi->pembayaran->order_id,
+                    'gross_amount' => $transaksi->pembayaran->gross_amount,
+                    'payment_type' => $transaksi->pembayaran->payment_type,
+                    'transaction_status' => $transaksi->pembayaran->transaction_status,
+                    'settlement_time' => $transaksi->pembayaran->settlement_time?->toDateTimeString(),
+                    'notes' => $transaksi->pembayaran->notes,
+                ] : null,
+                'alats' => $transaksi->detailTransaksis->map(fn (DetailTransaksi $detail) => [
+                    'detail_id' => $detail->id,
+                    'alat_id' => $detail->alat_id,
+                    'kode_alat' => $detail->alat?->kode_alat,
+                    'nama_alat' => $detail->alat?->nama_alat,
+                    'ukuran' => $detail->alat?->ukuran,
+                    'bahan' => $detail->alat?->bahan,
+                    'image' => $detail->alat?->image,
+                    'harga_sewa' => $detail->alat?->harga_sewa,
+                    'status_alat' => $detail->alat?->status,
+                    'kondisi_kembali' => $detail->kondisi_kembali,
+                    'denda_telat' => $detail->denda_telat,
+                    'denda_rusak' => $detail->denda_rusak,
+                    'total_denda' => $detail->total_denda,
+                    'keterangan' => $detail->keterangan,
+                    'foto_kembali' => $detail->foto_kembali,
+                ])->values(),
+            ],
         ]);
     }
 

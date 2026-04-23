@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //sewa
     Route::post('/transaksi/pinjam', [PinjamController::class, 'pinjam']);
     Route::get('/transaksi/pinjam', [PinjamController::class, 'index']);
+    Route::get('/transaksi/pinjam/{id}', [PinjamController::class, 'show']);
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
