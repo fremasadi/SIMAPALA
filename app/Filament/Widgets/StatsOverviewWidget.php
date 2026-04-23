@@ -13,11 +13,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class StatsOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
-    protected int | string | array $columnSpan = 'full';
+
+    protected int|string|array $columnSpan = 'full';
 
     protected function getStats(): array
     {
-        $totalAlat    = Alat::count();
+        $totalAlat = Alat::count();
         $alatTersedia = Alat::where('status', 'tersedia')->count();
         $alatDipinjam = Alat::where('status', 'dipinjam')->count();
 
@@ -52,11 +53,11 @@ class StatsOverviewWidget extends BaseWidget
                 ->color('warning')
                 ->icon('heroicon-o-clipboard-document-list'),
 
-            Stat::make('Kas Menunggu Verifikasi', $kasPending)
-                ->description('Pembayaran kas menunggu')
-                ->descriptionIcon('heroicon-m-clock')
-                ->color($kasPending > 0 ? 'warning' : 'success')
-                ->icon('heroicon-o-banknotes'),
+            // Stat::make('Kas Menunggu Verifikasi', $kasPending)
+            //     ->description('Pembayaran kas menunggu')
+            //     ->descriptionIcon('heroicon-m-clock')
+            //     ->color($kasPending > 0 ? 'warning' : 'success')
+            //     ->icon('heroicon-o-banknotes'),
 
             // Stat::make('Sumbangan Pending', $sumbanganPending)
             //     ->description('Menunggu approval admin')
