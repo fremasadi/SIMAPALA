@@ -32,6 +32,7 @@ class CreateAnggota extends CreateRecord
 
         // 2. Masukkan user_id ke anggota
         $data['user_id'] = $user->id;
+        $data['status_keanggotaan'] = 'aktif';
 
         // 3. Hapus data yang tidak ada di tabel anggotas
         unset($data['name'], $data['email'], $data['password']);

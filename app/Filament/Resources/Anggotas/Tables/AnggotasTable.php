@@ -13,7 +13,7 @@ class AnggotasTable
     {
         return $table
             ->columns([
-               TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),
@@ -27,14 +27,14 @@ class AnggotasTable
                     ->label('NIM')
                     ->searchable(),
 
-                TextColumn::make('status_keanggotaan')
-                    ->label('Status')
-                    ->badge()
-                    ->colors([
-                        'success' => 'aktif',
-                        'danger' => 'nonaktif',
-                    ])
-                    ->sortable(),
+                // TextColumn::make('status_keanggotaan')
+                //     ->label('Status')
+                //     ->badge()
+                //     ->colors([
+                //         'success' => 'aktif',
+                //         'danger' => 'nonaktif',
+                //     ])
+                //     ->sortable(),
 
                 TextColumn::make('created_at')
                     ->label('Dibuat')

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DanaMasuks\Tables;
 
+use App\Exports\DanaMasukExport;
 use App\Models\DanaMasuk;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -13,7 +14,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Rap2hpoutre\FastExcel\FastExcel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DanaMasuksTable
 {
@@ -33,18 +34,18 @@ class DanaMasuksTable
                 TextColumn::make('tanggal')
                     ->date('d M Y')
                     ->sortable(),
-                TextColumn::make('status')
-                    ->badge()
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'approved' => 'Diterima',
-                        'pending'  => 'Menunggu',
-                        default    => ucfirst($state),
-                    })
-                    ->color(fn ($state) => match ($state) {
-                        'approved' => 'success',
-                        'pending'  => 'warning',
-                        default    => 'gray',
-                    }),
+                // TextColumn::make('status')
+                //     ->badge()
+                //     ->formatStateUsing(fn ($state) => match ($state) {
+                //         'approved' => 'Diterima',
+                //         'pending'  => 'Menunggu',
+                //         default    => ucfirst($state),
+                //     })
+                //     ->color(fn ($state) => match ($state) {
+                //         'approved' => 'success',
+                //         'pending'  => 'warning',
+                //         default    => 'gray',
+                //     }),
                 TextColumn::make('user.name')
                     ->label('Diinput Oleh')
                     ->searchable(),
@@ -63,13 +64,13 @@ class DanaMasuksTable
                     ->options(DanaMasuk::JENIS)
                     ->placeholder('Semua Jenis'),
 
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        // 'pending'  => 'Menunggu',
-                        'approved' => 'Diterima',
-                    ])
-                    ->placeholder('Semua Status'),
+                // SelectFilter::make('status')
+                //     ->label('Status')
+                //     ->options([
+                //         // 'pending'  => 'Menunggu',
+                //         'approved' => 'Diterima',
+                //     ])
+                //     ->placeholder('Semua Status'),
 
                 Filter::make('tanggal')
                     ->label('Rentang Tanggal')
@@ -87,11 +88,12 @@ class DanaMasuksTable
                     ->indicateUsing(function (array $data) {
                         $indicators = [];
                         if ($data['dari'] ?? null) {
-                            $indicators[] = 'Dari: ' . $data['dari'];
+                            $indicators[] = 'Dari: '.$data['dari'];
                         }
                         if ($data['sampai'] ?? null) {
-                            $indicators[] = 'Sampai: ' . $data['sampai'];
+                            $indicators[] = 'Sampai: '.$data['sampai'];
                         }
+
                         return $indicators;
                     }),
             ])
@@ -104,31 +106,10 @@ class DanaMasuksTable
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
                     ->action(function ($livewire) {
-                        $filters = $livewire->tableFilters ?? [];
-
-                        $data = DanaMasuk::query()
-                            ->with('user')
-                            ->when($filters['jenis']['value'] ?? null, fn ($q, $v) => $q->where('jenis', $v))
-                            ->when($filters['status']['value'] ?? null, fn ($q, $v) => $q->where('status', $v))
-                            ->when($filters['tanggal']['dari'] ?? null, fn ($q, $v) => $q->whereDate('tanggal', '>=', $v))
-                            ->when($filters['tanggal']['sampai'] ?? null, fn ($q, $v) => $q->whereDate('tanggal', '<=', $v))
-                            ->orderBy('tanggal', 'desc')
-                            ->get()
-                            ->map(fn ($row, $i) => [
-                                'No'            => $i + 1,
-                                'Jenis'         => DanaMasuk::JENIS[$row->jenis] ?? ucfirst($row->jenis),
-                                'Nominal (Rp)'  => $row->nominal,
-                                'Keterangan'    => $row->keterangan,
-                                'Tanggal'       => $row->tanggal?->format('d/m/Y'),
-                                'Status'        => match ($row->status) {
-                                    'approved' => 'Diterima',
-                                    'pending'  => 'Menunggu',
-                                    default    => ucfirst($row->status),
-                                },
-                                'Diinput Oleh'  => $row->user?->name,
-                            ]);
-
-                        return (new FastExcel($data))->download('dana-masuk-' . now()->format('Y-m-d') . '.xlsx');
+                        return Excel::download(
+                            new DanaMasukExport($livewire->tableFilters ?? []),
+                            'dana-masuk-'.now()->format('Y-m-d').'.xlsx'
+                        );
                     }),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

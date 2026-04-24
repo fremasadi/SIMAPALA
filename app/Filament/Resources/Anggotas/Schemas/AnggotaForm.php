@@ -2,11 +2,9 @@
 
 namespace App\Filament\Resources\Anggotas\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AnggotaForm
 {
@@ -31,10 +29,10 @@ class AnggotaForm
                 TextInput::make('nim')
                     ->required(),
 
-                Select::make('status_keanggotaan')
-                    ->options(['aktif' => 'Aktif', 'nonaktif' => 'Nonaktif'])
-                    ->default('aktif')
-                    ->required(),
+                // Select::make('status_keanggotaan')
+                //     ->options(['aktif' => 'Aktif', 'nonaktif' => 'Nonaktif'])
+                //     ->default('aktif')
+                //     ->required(),
             ]);
     }
 }
