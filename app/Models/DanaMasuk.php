@@ -27,12 +27,13 @@ class DanaMasuk extends Model
     ];
 
     // Jenis yang langsung approved karena diinput oleh admin
-    const AUTO_APPROVED = ['denda_telat', 'denda_rusak', 'penyewaan'];
+    const AUTO_APPROVED = ['denda_telat', 'denda_rusak', 'denda_hilang', 'penyewaan'];
 
     const JENIS = [
         'penyewaan'   => 'Penyewaan Alat',
         'denda_telat' => 'Denda Telat',
         'denda_rusak' => 'Denda Rusak',
+        'denda_hilang' => 'Denda Hilang',
         'kas'         => 'Kas',
         'sumbangan'   => 'Sumbangan',
         'dana_kampus' => 'Dana Kampus',

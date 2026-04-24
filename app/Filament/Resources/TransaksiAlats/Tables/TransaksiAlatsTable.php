@@ -223,8 +223,9 @@ class TransaksiAlatsTable
                         $hariTelat = $record->tanggal_kembali && $record->tanggal_kembali->isPast()
                             ? (int) $record->tanggal_kembali->diffInDays(now())
                             : 0;
-                        $dendaTelat  = $hariTelat * TransaksiAlat::DENDA_TELAT_PER_HARI;
-                        $totalRusak  = 0;
+                        $dendaTelat = $hariTelat * TransaksiAlat::DENDA_TELAT_PER_HARI;
+                        $totalRusak = 0;
+                        $totalHilang = 0;
 
                         foreach ($data['detail_items'] as $item) {
                             $dendaRusak = (float) ($item['denda_rusak'] ?? 0);
@@ -248,7 +249,7 @@ class TransaksiAlatsTable
                                         'user_id'          => $record->user_id,
                                         'transaksi_id'     => $record->id,
                                         'denda'            => $dendaRusak,
-                                        'keterangan'       => "Alat hilang saat pengembalian — Transaksi #{$record->id}",
+                                        'keterangan'       => "Alat hilang saat pengembalian - Transaksi #{$record->id}",
                                         'foto_pembayaran'  => $item['foto_pembayaran'] ?? null,
                                     ]);
                                 } elseif ($item['kondisi_kembali'] === 'rusak') {
@@ -267,7 +268,11 @@ class TransaksiAlatsTable
                                 }
                             }
 
-                            $totalRusak += $dendaRusak;
+                            if (($item['kondisi_kembali'] ?? null) === 'hilang') {
+                                $totalHilang += $dendaRusak;
+                            } elseif (($item['kondisi_kembali'] ?? null) === 'rusak') {
+                                $totalRusak += $dendaRusak;
+                            }
                         }
 
                         // Insert dana masuk denda telat (satu entri per transaksi)
@@ -276,7 +281,7 @@ class TransaksiAlatsTable
                                 'jenis'       => 'denda_telat',
                                 'nominal'     => $dendaTelat,
                                 'status'      => 'approved',
-                                'keterangan'  => "Denda telat {$hariTelat} hari — Transaksi #{$record->id}",
+                                'keterangan'  => "Denda telat {$hariTelat} hari - Transaksi #{$record->id}",
                                 'tanggal'     => now()->toDateString(),
                                 'user_id'     => $record->user_id,
                                 'sumber_type' => TransaksiAlat::class,
@@ -290,7 +295,20 @@ class TransaksiAlatsTable
                                 'jenis'       => 'denda_rusak',
                                 'nominal'     => $totalRusak,
                                 'status'      => 'approved',
-                                'keterangan'  => "Denda rusak alat — Transaksi #{$record->id}",
+                                'keterangan'  => "Denda rusak alat - Transaksi #{$record->id}",
+                                'tanggal'     => now()->toDateString(),
+                                'user_id'     => $record->user_id,
+                                'sumber_type' => TransaksiAlat::class,
+                                'sumber_id'   => $record->id,
+                            ]);
+                        }
+
+                        if ($totalHilang > 0) {
+                            DanaMasuk::create([
+                                'jenis'       => 'denda_hilang',
+                                'nominal'     => $totalHilang,
+                                'status'      => 'approved',
+                                'keterangan'  => "Denda alat hilang - Transaksi #{$record->id}",
                                 'tanggal'     => now()->toDateString(),
                                 'user_id'     => $record->user_id,
                                 'sumber_type' => TransaksiAlat::class,

@@ -32,6 +32,7 @@ class DanaMasukWidget extends BaseWidget
         $kas        = $base()->where('jenis', 'kas')->sum('nominal');
         $dendaTelat = $base()->where('jenis', 'denda_telat')->sum('nominal');
         $dendaRusak = $base()->where('jenis', 'denda_rusak')->sum('nominal');
+        $dendaHilang = $base()->where('jenis', 'denda_hilang')->sum('nominal');
         $sumbangan  = $base()->where('jenis', 'sumbangan')->sum('nominal');
         $danaKampus = $base()->where('jenis', 'dana_kampus')->sum('nominal');
 
@@ -67,6 +68,12 @@ class DanaMasukWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-wrench-screwdriver')
                 ->color('danger')
                 ->icon('heroicon-o-wrench-screwdriver'),
+
+            Stat::make('Denda Hilang', $fmt($dendaHilang))
+                ->description('Denda alat hilang')
+                ->descriptionIcon('heroicon-m-exclamation-triangle')
+                ->color('gray')
+                ->icon('heroicon-o-exclamation-triangle'),
 
             Stat::make('Sumbangan & Dana Kampus', $fmt($sumbangan + $danaKampus))
                 ->description('Sumbangan + Dana kampus')
