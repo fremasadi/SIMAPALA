@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\TransaksiAlat;
 use App\Models\KasPembayaran;
+use App\Models\TransaksiAlat;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -29,21 +29,57 @@ class DashboardController extends Controller
             ->sum('nominal');
 
         /**
-         * 🕒 AKTIVITAS TERBARU (peminjaman alat)
+         * 🕒 AKTIVITAS TERBARU (peminjaman alat + pembayaran kas)
          */
-        $aktivitas = TransaksiAlat::where('user_id', $user->id)
+        $aktivitasTransaksi = TransaksiAlat::where('user_id', $user->id)
             ->latest()
             ->take(10)
             ->get()
             ->map(function ($item) {
                 return [
                     'id' => $item->id,
+                    'tipe' => 'transaksi_alat',
                     'judul' => $item->jenis_transaksi === 'pinjam'
                         ? 'Peminjaman Alat'
                         : 'Sewa Alat',
                     'status' => $item->status,
+                    'waktu_raw' => $item->created_at,
                     'waktu' => Carbon::parse($item->created_at)->diffForHumans(),
                 ];
+            });
+
+        $aktivitasKas = KasPembayaran::with('kasBulanan')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function ($item) {
+                $periodeKas = $item->kasBulanan
+                    ? Carbon::create($item->kasBulanan->tahun, $item->kasBulanan->bulan, 1)->translatedFormat('F Y')
+                    : null;
+
+                return [
+                    'id' => $item->id,
+                    'tipe' => 'pembayaran_kas',
+                    'judul' => 'Pembayaran Kas',
+                    'status' => $item->status,
+                    'nominal' => $item->nominal,
+                    'nominal_formatted' => 'Rp ' . number_format($item->nominal, 0, ',', '.'),
+                    'periode_kas' => $periodeKas,
+                    'waktu_raw' => $item->created_at,
+                    'waktu' => Carbon::parse($item->created_at)->diffForHumans(),
+                ];
+            });
+
+        $aktivitas = $aktivitasTransaksi
+            ->concat($aktivitasKas)
+            ->sortByDesc('waktu_raw')
+            ->take(10)
+            ->values()
+            ->map(function ($item) {
+                unset($item['waktu_raw']);
+
+                return $item;
             });
 
         return response()->json([
