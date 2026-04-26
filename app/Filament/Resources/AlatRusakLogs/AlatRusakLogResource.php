@@ -13,6 +13,8 @@ use UnitEnum;
 class AlatRusakLogResource extends Resource
 {
     protected static ?string $model = AlatRusakLog::class;
+    protected static ?string $modelLabel = 'Log Alat Rusak';
+    protected static ?string $pluralModelLabel = 'Log Alat Rusak';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-wrench-screwdriver';
 

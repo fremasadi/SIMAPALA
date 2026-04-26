@@ -18,6 +18,8 @@ use UnitEnum;
 class PembayaranResource extends Resource
 {
     protected static ?string $model = Pembayaran::class;
+    protected static ?string $modelLabel = 'Pembayaran Transaksi';
+    protected static ?string $pluralModelLabel = 'Pembayaran Transaksi';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
     protected static UnitEnum|string|null $navigationGroup = 'Transaksi';

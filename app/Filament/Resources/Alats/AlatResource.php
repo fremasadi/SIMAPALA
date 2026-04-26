@@ -18,10 +18,12 @@ use UnitEnum;
 class AlatResource extends Resource
 {
     protected static ?string $model = Alat::class;
+    protected static ?string $modelLabel = 'Alat';
+    protected static ?string $pluralModelLabel = 'Alat';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static UnitEnum|string|null $navigationGroup = 'Data Master';
-    protected static ?string $navigationLabel = 'Daftar Alat';
+    protected static ?string $navigationLabel = 'Alat';
 
     public static function form(Schema $schema): Schema
     {

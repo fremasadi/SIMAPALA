@@ -14,6 +14,8 @@ use UnitEnum;
 class AlatHilangLogResource extends Resource
 {
     protected static ?string $model = AlatHilangLog::class;
+    protected static ?string $modelLabel = 'Log Alat Hilang';
+    protected static ?string $pluralModelLabel = 'Log Alat Hilang';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
 

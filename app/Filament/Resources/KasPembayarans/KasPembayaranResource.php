@@ -19,6 +19,8 @@ use UnitEnum;
 class KasPembayaranResource extends Resource
 {
     protected static ?string $model = KasPembayaran::class;
+    protected static ?string $modelLabel = 'Pembayaran Kas';
+    protected static ?string $pluralModelLabel = 'Pembayaran Kas';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-currency-dollar';
     protected static UnitEnum|string|null $navigationGroup = 'Transaksi';

@@ -18,6 +18,8 @@ use UnitEnum;
 class DanaMasukResource extends Resource
 {
     protected static ?string $model = DanaMasuk::class;
+    protected static ?string $modelLabel = 'Dana Masuk';
+    protected static ?string $pluralModelLabel = 'Dana Masuk';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-wallet';
     protected static UnitEnum|string|null $navigationGroup = 'Data Master';

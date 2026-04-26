@@ -18,10 +18,12 @@ use UnitEnum;
 class BahanResource extends Resource
 {
     protected static ?string $model = Bahan::class;
+    protected static ?string $modelLabel = 'Bahan';
+    protected static ?string $pluralModelLabel = 'Bahan';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
     protected static UnitEnum|string|null $navigationGroup = 'Data Master';
-    protected static ?string $navigationLabel = 'Daftar Bahan';
+    protected static ?string $navigationLabel = 'Bahan';
 
     public static function form(Schema $schema): Schema
     {

@@ -18,10 +18,12 @@ use UnitEnum;
 class AnggotaResource extends Resource
 {
     protected static ?string $model = Anggota::class;
+    protected static ?string $modelLabel = 'Anggota';
+    protected static ?string $pluralModelLabel = 'Anggota';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
     protected static UnitEnum|string|null $navigationGroup = 'Manajemen User';
-    protected static ?string $navigationLabel = 'Daftar Anggota Mapala';
+    protected static ?string $navigationLabel = 'Anggota';
 
     public static function form(Schema $schema): Schema
     {

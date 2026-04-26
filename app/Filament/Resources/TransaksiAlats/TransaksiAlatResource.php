@@ -21,10 +21,12 @@ use Illuminate\Database\Eloquent\Builder;
 class TransaksiAlatResource extends Resource
 {
     protected static ?string $model = TransaksiAlat::class;
+    protected static ?string $modelLabel = 'Transaksi Alat';
+    protected static ?string $pluralModelLabel = 'Transaksi Alat';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard';
     protected static UnitEnum|string|null $navigationGroup = 'Transaksi';
-    protected static ?string $navigationLabel = 'Daftar Transaksi Alat';
+    protected static ?string $navigationLabel = 'Transaksi Alat';
 
     public static function form(Schema $schema): Schema
     {
