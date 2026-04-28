@@ -31,8 +31,8 @@ class AnggotaForm
                     ->required(),
 
                 DateTimePicker::make('created_at')
+                    ->required()
                     ->label('Didaftarkan Pada')
-                    ->dehydrated(false),
 
                 // Select::make('status_keanggotaan')
                 //     ->options(['aktif' => 'Aktif', 'nonaktif' => 'Nonaktif'])
