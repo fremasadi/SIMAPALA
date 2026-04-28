@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Anggotas\Schemas;
 
+use App\Models\Anggota;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class AnggotaForm
 {
@@ -20,6 +22,13 @@ class AnggotaForm
                 TextInput::make('email')
                     ->label('Email')
                     ->email()
+                    ->rules([
+                        fn (?Model $record) => Rule::unique('users', 'email')
+                            ->ignore($record?->user_id),
+                    ])
+                    ->validationMessages([
+                        'unique' => 'Email sudah digunakan.',
+                    ])
                     ->required(),
 
                 TextInput::make('password')
@@ -28,6 +37,13 @@ class AnggotaForm
                     ->required(),
 
                 TextInput::make('nim')
+                    ->rules([
+                        fn (?Model $record) => Rule::unique((new Anggota())->getTable(), 'nim')
+                            ->ignore($record?->id),
+                    ])
+                    ->validationMessages([
+                        'unique' => 'NIM sudah digunakan.',
+                    ])
                     ->required(),
 
                 DateTimePicker::make('created_at')

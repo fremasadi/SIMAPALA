@@ -21,7 +21,10 @@ class UserForm
                     ->label('Email')
                     ->email()
                     ->required()
-                    ->unique('users', 'email', ignoreRecord: true),
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'Email sudah digunakan.',
+                    ]),
                 // DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
