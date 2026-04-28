@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Anggotas\Schemas;
 
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -28,6 +29,11 @@ class AnggotaForm
 
                 TextInput::make('nim')
                     ->required(),
+
+                DateTimePicker::make('created_at')
+                    ->label('Didaftarkan Pada')
+                    ->disabled()
+                    ->dehydrated(false),
 
                 // Select::make('status_keanggotaan')
                 //     ->options(['aktif' => 'Aktif', 'nonaktif' => 'Nonaktif'])
