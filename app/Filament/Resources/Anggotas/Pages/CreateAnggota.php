@@ -3,13 +3,11 @@
 namespace App\Filament\Resources\Anggotas\Pages;
 
 use App\Filament\Resources\Anggotas\AnggotaResource;
-use App\Models\KasBulanan;
-use Carbon\Carbon;
-use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use Carbon\Carbon;
+use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
 
 class CreateAnggota extends CreateRecord
 {
@@ -53,25 +51,6 @@ class CreateAnggota extends CreateRecord
 
     protected function afterCreate(): void
     {
-        $userId = $this->record->user_id;
-        $now    = now();
-
-        $kas = KasBulanan::firstOrCreate(
-            [
-                'user_id' => $userId,
-                'bulan'   => $now->month,
-                'tahun'   => $now->year,
-            ],
-            [
-                'nominal' => 10000,
-                'status'  => 'belum_lunas',
-            ]
-        );
-
-        Log::info('CreateAnggota: kas bulanan bulan ini di-generate untuk user baru', [
-            'user_id'  => $userId,
-            'bulan'    => $now->format('Y-m'),
-            'created'  => $kas->wasRecentlyCreated,
-        ]);
+        Artisan::call('kas:generate-bulanan');
     }
 }
