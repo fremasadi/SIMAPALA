@@ -34,7 +34,8 @@ class AnggotaForm
                 TextInput::make('password')
                     ->label('Password')
                     ->password()
-                    ->required(),
+                    ->required(fn (string $operation): bool => $operation === 'create')
+                    ->dehydrated(fn (?string $state): bool => filled($state)),
 
                 TextInput::make('nim')
                     ->rules([
