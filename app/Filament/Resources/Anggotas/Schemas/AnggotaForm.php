@@ -32,7 +32,6 @@ class AnggotaForm
 
                 DateTimePicker::make('created_at')
                     ->label('Didaftarkan Pada')
-                    ->disabled()
                     ->dehydrated(false),
 
                 // Select::make('status_keanggotaan')
