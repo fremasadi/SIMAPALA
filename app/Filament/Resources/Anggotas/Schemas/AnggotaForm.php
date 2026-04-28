@@ -23,7 +23,7 @@ class AnggotaForm
                     ->label('Email')
                     ->email()
                     ->rules([
-                        fn (?Model $record) => Rule::unique('users', 'email')
+                        fn(?Model $record) => Rule::unique('users', 'email')
                             ->ignore($record?->user_id),
                     ])
                     ->validationMessages([
@@ -34,12 +34,12 @@ class AnggotaForm
                 TextInput::make('password')
                     ->label('Password')
                     ->password()
-                    ->required(fn (string $operation): bool => $operation === 'create')
-                    ->dehydrated(fn (?string $state): bool => filled($state)),
+                    ->required(fn(string $operation): bool => $operation === 'create')
+                    ->dehydrated(fn(?string $state): bool => filled($state)),
 
                 TextInput::make('nim')
                     ->rules([
-                        fn (?Model $record) => Rule::unique((new Anggota())->getTable(), 'nim')
+                        fn(?Model $record) => Rule::unique((new Anggota())->getTable(), 'nim')
                             ->ignore($record?->id),
                     ])
                     ->validationMessages([
@@ -49,6 +49,7 @@ class AnggotaForm
 
                 DateTimePicker::make('created_at')
                     ->required()
+                    ->visible(fn(string $operation): bool => $operation === 'create')
                     ->label('Didaftarkan Pada')
 
                 // Select::make('status_keanggotaan')
