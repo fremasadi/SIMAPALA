@@ -21,14 +21,14 @@ class ListKasBulanans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('generate_kas')
-                ->label('Generate Kas Bulan Ini')
-                ->icon('heroicon-o-arrow-path')
-                ->color('info')
-                ->action(function () {
-                    $this->runGenerateKas();
-                    $this->resetTable();
-                }),
+            // Action::make('generate_kas')
+            //     ->label('Generate Kas Bulan Ini')
+            //     ->icon('heroicon-o-arrow-path')
+            //     ->color('info')
+            //     ->action(function () {
+            //         $this->runGenerateKas();
+            //         $this->resetTable();
+            //     }),
         ];
     }
 
