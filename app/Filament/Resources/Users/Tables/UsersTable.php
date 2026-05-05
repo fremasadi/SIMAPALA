@@ -42,7 +42,7 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                // DeleteAction::make(),
             ]);
     }
 }

@@ -54,7 +54,7 @@ class AnggotasTable
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                // DeleteAction::make(),
             ]);
     }
 }
