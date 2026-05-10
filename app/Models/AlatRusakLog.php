@@ -16,6 +16,7 @@ class AlatRusakLog extends Model
         'detail_transaksi_id',
         'denda',
         'keterangan',
+        'foto_pembayaran',
     ];
 
     protected $casts = [

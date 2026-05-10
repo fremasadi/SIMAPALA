@@ -6,6 +6,7 @@ use App\Filament\Resources\AlatRusakLogs\Pages\ListAlatRusakLogs;
 use App\Models\AlatRusakLog;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -54,6 +55,16 @@ class AlatRusakLogResource extends Resource
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
                     ->limit(60)
+                    ->toggleable(),
+                ImageColumn::make('foto_pembayaran')
+                    ->label('Foto Bukti')
+                    ->disk('public')
+                    ->height(60)
+                    ->url(fn ($record) => $record->foto_pembayaran
+                        ? asset("storage/{$record->foto_pembayaran}")
+                        : null)
+                    ->openUrlInNewTab()
+                    ->defaultImageUrl(fn () => null)
                     ->toggleable(),
             ])
             ->defaultSort('created_at', 'desc')

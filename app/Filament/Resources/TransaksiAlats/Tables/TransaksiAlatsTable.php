@@ -210,11 +210,12 @@ class TransaksiAlatsTable
                                             ->label('Foto Bukti Pembayaran')
                                             ->image()
                                             ->disk('public')
-                                            ->directory('hilang-pembayaran')
+                                            ->directory('pengembalian-pembayaran')
                                             ->acceptedFileTypes(['image/*'])
                                             ->imageEditor()
                                             ->columnSpanFull()
-                                            ->visible(fn ($get) => $get('kondisi_kembali') === 'hilang')
+                                            ->visible(fn ($get) => in_array($get('kondisi_kembali'), ['rusak', 'hilang'], true))
+                                            ->required(fn ($get) => $get('kondisi_kembali') === 'rusak' && (float) ($get('denda_rusak') ?? 0) > 0)
                                             ->nullable(),
                                     ]),
                             ]),
@@ -262,6 +263,7 @@ class TransaksiAlatsTable
                                         'detail_transaksi_id'  => $detail->id,
                                         'denda'                => $dendaRusak,
                                         'keterangan'           => $item['keterangan'] ?? "Alat rusak saat pengembalian - Transaksi #{$record->id}",
+                                        'foto_pembayaran'      => $item['foto_pembayaran'] ?? null,
                                     ]);
                                 } else {
                                     $detail->alat->update(['status' => 'tersedia']);
