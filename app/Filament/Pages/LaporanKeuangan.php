@@ -40,6 +40,11 @@ class LaporanKeuangan extends Page
         return $this->totalPemasukan - $this->totalPengeluaran;
     }
 
+    public function getJumlahTransaksiProperty(): int
+    {
+        return $this->danaMasukQuery()->count() + $this->danaKeluarQuery()->count();
+    }
+
     public function getDanaMasuksProperty()
     {
         return $this->danaMasukQuery()
@@ -56,6 +61,48 @@ class LaporanKeuangan extends Page
             ->orderByDesc('tanggal')
             ->latest('id')
             ->get();
+    }
+
+    public function getRingkasanPemasukanProperty()
+    {
+        return $this->danaMasukQuery()
+            ->selectRaw('jenis, SUM(nominal) as total')
+            ->groupBy('jenis')
+            ->orderBy('jenis')
+            ->get();
+    }
+
+    public function getRingkasanPengeluaranProperty()
+    {
+        return $this->danaKeluarQuery()
+            ->selectRaw('jenis, SUM(nominal) as total')
+            ->groupBy('jenis')
+            ->orderBy('jenis')
+            ->get();
+    }
+
+    public function getArusKasProperty()
+    {
+        $pemasukan = $this->danaMasuks->map(fn (DanaMasuk $row) => [
+            'tanggal' => $row->tanggal,
+            'tipe' => 'masuk',
+            'jenis' => $row->jenis_label,
+            'keterangan' => $row->keterangan,
+            'nominal' => (float) $row->nominal,
+        ]);
+
+        $pengeluaran = $this->danaKeluars->map(fn (DanaKeluar $row) => [
+            'tanggal' => $row->tanggal,
+            'tipe' => 'keluar',
+            'jenis' => $row->jenis_label,
+            'keterangan' => $row->keterangan,
+            'nominal' => (float) $row->nominal,
+        ]);
+
+        return $pemasukan
+            ->concat($pengeluaran)
+            ->sortByDesc(fn (array $row) => $row['tanggal']?->format('Y-m-d') . '|' . $row['tipe'])
+            ->values();
     }
 
     private function danaMasukQuery()
