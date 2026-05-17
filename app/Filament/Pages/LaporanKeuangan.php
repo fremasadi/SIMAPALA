@@ -99,10 +99,21 @@ class LaporanKeuangan extends Page
             'nominal' => (float) $row->nominal,
         ]);
 
+        $saldoBerjalan = 0;
+
         return $pemasukan
             ->concat($pengeluaran)
-            ->sortByDesc(fn (array $row) => $row['tanggal']?->format('Y-m-d') . '|' . $row['tipe'])
-            ->values();
+            ->sortBy(fn (array $row) => $row['tanggal']?->format('Y-m-d') . '|' . $row['tipe'])
+            ->values()
+            ->map(function (array $row) use (&$saldoBerjalan) {
+                $saldoBerjalan += $row['tipe'] === 'masuk'
+                    ? $row['nominal']
+                    : -$row['nominal'];
+
+                $row['saldo_berjalan'] = $saldoBerjalan;
+
+                return $row;
+            });
     }
 
     private function danaMasukQuery()
