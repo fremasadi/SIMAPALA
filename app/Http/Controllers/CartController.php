@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Alat;
+use App\Models\TransaksiAlat;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -61,6 +63,12 @@ class CartController extends Controller
      */
     public function add(Request $request)
     {
+        if ($this->punyaTransaksiAktif()) {
+            return redirect()->back()
+                ->with('error', 'Anda masih memiliki transaksi alat yang sedang berjalan. Selesaikan dulu sebelum menyewa alat lagi.')
+                ->withFragment('equipment');
+        }
+
         $request->validate([
             'alat_id' => 'required|exists:alats,id',
             'jumlah'  => 'required|integer|min:1',
@@ -129,6 +137,11 @@ class CartController extends Controller
      */
     public function checkout(Request $request)
     {
+        if ($this->punyaTransaksiAktif()) {
+            return redirect()->route('cart.index')
+                ->with('error', 'Anda masih memiliki transaksi alat yang sedang berjalan. Selesaikan dulu sebelum checkout baru.');
+        }
+
         $cart = session()->get('cart', []);
         
         if (empty($cart)) {
@@ -155,5 +168,12 @@ class CartController extends Controller
 
         // Redirect ke PaymentController untuk proses pembayaran
         return app(PaymentController::class)->create($request);
+    }
+
+    private function punyaTransaksiAktif(): bool
+    {
+        return TransaksiAlat::where('user_id', Auth::id())
+            ->whereIn('status', TransaksiAlat::STATUS_AKTIF)
+            ->exists();
     }
 }

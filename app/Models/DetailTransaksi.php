@@ -15,6 +15,7 @@ class DetailTransaksi extends Model
         'transaksi_id',
         'alat_id',
         'kondisi_kembali',
+        'level_kerusakan',
         'denda_telat',
         'denda_rusak',
         'keterangan',

@@ -14,6 +14,7 @@ class AlatRusakLog extends Model
         'user_id',
         'transaksi_id',
         'detail_transaksi_id',
+        'level_kerusakan',
         'denda',
         'keterangan',
         'foto_pembayaran',
@@ -21,6 +22,11 @@ class AlatRusakLog extends Model
 
     protected $casts = [
         'denda' => 'decimal:2',
+    ];
+
+    const LEVEL_KERUSAKAN = [
+        'rusak_sedang' => 'Rusak Sedang',
+        'rusak_berat' => 'Rusak Berat',
     ];
 
     public function alat(): BelongsTo

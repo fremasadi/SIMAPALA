@@ -7,6 +7,8 @@ use App\Http\Controllers\TransactionController;
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Alat;
+use App\Models\TransaksiAlat;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +36,13 @@ Route::get('/', function () {
         })
         ->values();
 
-    return view('welcome', compact('alats'));
+    $punyaTransaksiAktif = Auth::check()
+        ? TransaksiAlat::where('user_id', Auth::id())
+            ->whereIn('status', TransaksiAlat::STATUS_AKTIF)
+            ->exists()
+        : false;
+
+    return view('welcome', compact('alats', 'punyaTransaksiAktif'));
 })->name('home');
 
 /*

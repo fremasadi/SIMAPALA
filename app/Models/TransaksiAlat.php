@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class TransaksiAlat extends Model
 {
     const DENDA_TELAT_PER_HARI = 50000;
+    const STATUS_AKTIF = ['menunggu', 'menunggu_pembayaran', 'disetujui', 'dipinjam'];
 
     protected $table = 'transaksi_alats';
 

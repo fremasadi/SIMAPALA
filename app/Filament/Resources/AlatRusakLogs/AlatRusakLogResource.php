@@ -48,6 +48,15 @@ class AlatRusakLogResource extends Resource
                 TextColumn::make('transaksi_id')
                     ->label('Transaksi #')
                     ->formatStateUsing(fn ($state) => '#' . $state),
+                TextColumn::make('level_kerusakan')
+                    ->label('Level Kerusakan')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => AlatRusakLog::LEVEL_KERUSAKAN[$state] ?? '-')
+                    ->color(fn ($state) => match ($state) {
+                        'rusak_sedang' => 'warning',
+                        'rusak_berat' => 'danger',
+                        default => 'gray',
+                    }),
                 TextColumn::make('denda')
                     ->label('Denda')
                     ->money('IDR')

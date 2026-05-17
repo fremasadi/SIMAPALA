@@ -141,6 +141,7 @@ class TransaksiAlatsTable
                             'kode_alat'       => $d->alat->kode_alat ?? '-',
                             'harga_alat'      => $d->alat->harga_alat ?? 0,
                             'kondisi_kembali' => $d->kondisi_kembali ?? 'baik',
+                            'level_kerusakan' => $d->level_kerusakan,
                             'denda_rusak'     => $d->denda_rusak ?? 0,
                             'keterangan'      => $d->keterangan,
                         ])->toArray(),
@@ -187,10 +188,18 @@ class TransaksiAlatsTable
                                             ->afterStateUpdated(function ($state, $set, $get) {
                                                 if ($state === 'hilang') {
                                                     $set('denda_rusak', (float) $get('harga_alat'));
+                                                    $set('level_kerusakan', null);
                                                 } elseif ($state === 'baik') {
                                                     $set('denda_rusak', 0);
+                                                    $set('level_kerusakan', null);
                                                 }
                                             }),
+                                        Select::make('level_kerusakan')
+                                            ->label('Level Kerusakan')
+                                            ->options(AlatRusakLog::LEVEL_KERUSAKAN)
+                                            ->visible(fn ($get) => $get('kondisi_kembali') === 'rusak')
+                                            ->required(fn ($get) => $get('kondisi_kembali') === 'rusak')
+                                            ->dehydrated(),
                                         TextInput::make('denda_rusak')
                                             ->label('Denda Rusak/Hilang (Rp)')
                                             ->numeric()
@@ -234,6 +243,9 @@ class TransaksiAlatsTable
                             $detail = DetailTransaksi::find($item['id']);
                             $detail?->update([
                                 'kondisi_kembali' => $item['kondisi_kembali'],
+                                'level_kerusakan' => $item['kondisi_kembali'] === 'rusak'
+                                    ? ($item['level_kerusakan'] ?? null)
+                                    : null,
                                 'denda_rusak'     => $dendaRusak,
                                 'denda_telat'     => $dendaTelat,
                                 'keterangan'      => $item['keterangan'] ?? null,
@@ -261,6 +273,7 @@ class TransaksiAlatsTable
                                         'user_id'              => $record->user_id,
                                         'transaksi_id'         => $record->id,
                                         'detail_transaksi_id'  => $detail->id,
+                                        'level_kerusakan'       => $item['level_kerusakan'] ?? null,
                                         'denda'                => $dendaRusak,
                                         'keterangan'           => $item['keterangan'] ?? "Alat rusak saat pengembalian - Transaksi #{$record->id}",
                                         'foto_pembayaran'      => $item['foto_pembayaran'] ?? null,

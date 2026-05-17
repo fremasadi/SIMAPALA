@@ -38,6 +38,8 @@ class AnggotaForm
                     ->dehydrated(fn(?string $state): bool => filled($state)),
 
                 TextInput::make('nim')
+                    ->numeric()
+                    ->minLength(8)
                     ->rules([
                         fn(?Model $record) => Rule::unique((new Anggota())->getTable(), 'nim')
                             ->ignore($record?->id),
