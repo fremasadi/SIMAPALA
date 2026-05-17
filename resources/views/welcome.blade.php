@@ -266,6 +266,24 @@
                     @foreach ($alats as $alat)
                         <div
                             class="bg-gradient-to-br from-white to-yellow-50 border-2 border-yellow-300 rounded-xl p-6 hover:shadow-xl transition hover:border-yellow-500 flex flex-col">
+                            <!-- Image Section -->
+                            <div class="mb-4 overflow-hidden rounded-lg border border-yellow-200 bg-yellow-100">
+                                @if ($alat->image)
+                                    <img src="{{ asset('storage/' . $alat->image) }}"
+                                        alt="{{ $alat->nama_alat }}"
+                                        class="h-44 w-full object-cover">
+                                @else
+                                    <div class="h-44 w-full flex items-center justify-center bg-gradient-to-br from-yellow-100 to-yellow-200 text-yellow-700">
+                                        <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M3 16.5V7.8A1.8 1.8 0 014.8 6h14.4A1.8 1.8 0 0121 7.8v8.4a1.8 1.8 0 01-1.8 1.8H4.8A1.8 1.8 0 013 16.2z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M8.25 10.5h.008v.008H8.25V10.5zm-2.25 5.25 3.75-3.75a1.5 1.5 0 012.121 0l1.379 1.379a1.5 1.5 0 002.121 0L18 10.75" />
+                                        </svg>
+                                    </div>
+                                @endif
+                            </div>
+
                             <!-- Header Section -->
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex-1">
