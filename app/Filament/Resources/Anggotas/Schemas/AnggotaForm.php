@@ -50,6 +50,7 @@ class AnggotaForm
                 DateTimePicker::make('created_at')
                     ->required()
                     ->visible(fn(string $operation): bool => $operation === 'create')
+                    ->default(now())
                     ->label('Didaftarkan Pada')
 
                 // Select::make('status_keanggotaan')

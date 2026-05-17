@@ -32,6 +32,8 @@ class PaymentController extends Controller
                 'tanggal_pinjam' => 'required|date',
                 'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
                 'total_biaya' => 'required|numeric|min:0',
+                'jenis_jaminan' => 'required|string|max:255',
+                'foto_jaminan' => 'required|image|max:2048',
             ]);
 
             // Ambil cart dari session
@@ -43,6 +45,8 @@ class PaymentController extends Controller
 
             DB::beginTransaction();
 
+            $fotoJaminanPath = $request->file('foto_jaminan')->store('jaminan', 'public');
+
             // Buat transaksi baru
             $transaksi = TransaksiAlat::create([
                 'user_id' => Auth::id(),
@@ -50,6 +54,8 @@ class PaymentController extends Controller
                 'tanggal_ajuan' => now(),
                 'tanggal_pinjam' => $validated['tanggal_pinjam'],
                 'tanggal_kembali' => $validated['tanggal_kembali'],
+                'jenis_jaminan' => $validated['jenis_jaminan'],
+                'foto_jaminan' => $fotoJaminanPath,
                 'status' => 'menunggu',
                 'total_biaya' => $validated['total_biaya'],
             ]);

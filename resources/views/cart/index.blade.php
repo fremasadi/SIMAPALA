@@ -203,11 +203,45 @@
                             </div>
 
                             {{-- Checkout Payment Form --}}
-                            <form action="{{ route('cart.checkout') }}" method="POST" id="checkoutForm">
+                            <form action="{{ route('cart.checkout') }}" method="POST" enctype="multipart/form-data" id="checkoutForm">
                                 @csrf
                                 <input type="hidden" name="tanggal_pinjam" value="{{ $tanggal_pinjam }}">
                                 <input type="hidden" name="tanggal_kembali" value="{{ $tanggal_kembali }}">
                                 <input type="hidden" name="total_biaya" value="{{ $total_biaya }}">
+
+                                <div class="mb-4 space-y-4">
+                                    <div>
+                                        <label for="jenis_jaminan" class="block text-sm font-bold text-gray-700 mb-2">
+                                            Jenis Jaminan
+                                        </label>
+                                        <input type="text"
+                                            name="jenis_jaminan"
+                                            id="jenis_jaminan"
+                                            value="{{ old('jenis_jaminan') }}"
+                                            placeholder="Contoh: KTP, KTM, SIM"
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition"
+                                            required>
+                                        @error('jenis_jaminan')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label for="foto_jaminan" class="block text-sm font-bold text-gray-700 mb-2">
+                                            Foto Jaminan
+                                        </label>
+                                        <input type="file"
+                                            name="foto_jaminan"
+                                            id="foto_jaminan"
+                                            accept="image/*"
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition"
+                                            required>
+                                        <p class="mt-1 text-xs text-gray-500">Format gambar, maksimal 2 MB.</p>
+                                        @error('foto_jaminan')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
                                 
                                 <button type="submit" 
                                         class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-4 rounded-lg hover:from-amber-600 hover:to-orange-600 transition font-bold shadow-lg mb-3">

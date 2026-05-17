@@ -20,6 +20,7 @@ class AlatsTable
             ->columns([
                 ImageColumn::make('image')
                     ->label('Gambar')
+                    ->disk('public')
                     ->circular(),
                 TextColumn::make('kode_alat')
                     ->label('Kode Alat')

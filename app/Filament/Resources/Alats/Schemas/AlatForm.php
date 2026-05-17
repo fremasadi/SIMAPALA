@@ -60,6 +60,8 @@ class AlatForm
                 FileUpload::make('image')
                     ->label('Gambar')
                     ->image()
+                    ->disk('public')
+                    ->visibility('public')
                     ->directory('alats')
                     ->imageEditor(),
             ]);

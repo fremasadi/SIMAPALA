@@ -19,6 +19,8 @@ class TransaksiAlat extends Model
         'tanggal_ajuan',
         'tanggal_pinjam',
         'tanggal_kembali',
+        'jenis_jaminan',
+        'foto_jaminan',
         'status',
         'total_biaya',
     ];

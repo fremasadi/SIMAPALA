@@ -140,11 +140,17 @@ class CartController extends Controller
             'tanggal_pinjam' => 'required|date|after_or_equal:today',
             'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
             'total_biaya' => 'required|numeric|min:0',
+            'jenis_jaminan' => 'required|string|max:255',
+            'foto_jaminan' => 'required|image|max:2048',
         ], [
             'tanggal_pinjam.required' => 'Tanggal pinjam harus diisi',
             'tanggal_pinjam.after_or_equal' => 'Tanggal pinjam tidak boleh di masa lalu',
             'tanggal_kembali.required' => 'Tanggal kembali harus diisi',
             'tanggal_kembali.after' => 'Tanggal kembali harus setelah tanggal pinjam',
+            'jenis_jaminan.required' => 'Jenis jaminan harus diisi',
+            'foto_jaminan.required' => 'Foto jaminan harus diunggah',
+            'foto_jaminan.image' => 'Foto jaminan harus berupa gambar',
+            'foto_jaminan.max' => 'Ukuran foto jaminan maksimal 2 MB',
         ]);
 
         // Redirect ke PaymentController untuk proses pembayaran
