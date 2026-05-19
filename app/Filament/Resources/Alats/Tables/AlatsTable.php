@@ -28,6 +28,9 @@ class AlatsTable
                 TextColumn::make('nama_alat')
                     ->label('Nama Alat')
                     ->searchable(),
+                TextColumn::make('satuan')
+                    ->label('Satuan Ukuran')
+                    ->searchable(),
                 TextColumn::make('ukuran')
                     ->label('Ukuran')
                     ->searchable(),

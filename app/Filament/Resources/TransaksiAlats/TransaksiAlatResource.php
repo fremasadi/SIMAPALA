@@ -2,31 +2,33 @@
 
 namespace App\Filament\Resources\TransaksiAlats;
 
-use App\Filament\Resources\TransaksiAlats\Pages\CreateTransaksiAlat;
 use App\Filament\Resources\TransaksiAlats\Pages\EditTransaksiAlat;
 use App\Filament\Resources\TransaksiAlats\Pages\ListTransaksiAlats;
 use App\Filament\Resources\TransaksiAlats\Pages\ViewTransaksiAlat;
+use App\Filament\Resources\TransaksiAlats\RelationManagers\DetailTransaksiRelationManager;
 use App\Filament\Resources\TransaksiAlats\Schemas\TransaksiAlatForm;
 use App\Filament\Resources\TransaksiAlats\Tables\TransaksiAlatsTable;
-use App\Filament\Resources\TransaksiAlats\RelationManagers\DetailTransaksiRelationManager;
 use App\Models\TransaksiAlat;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class TransaksiAlatResource extends Resource
 {
     protected static ?string $model = TransaksiAlat::class;
-    protected static ?string $modelLabel = 'Transaksi Alat';
-    protected static ?string $pluralModelLabel = 'Transaksi Alat';
+
+    protected static ?string $modelLabel = 'Transaksi Peminjaman';
+
+    protected static ?string $pluralModelLabel = 'Transaksi Peminjaman';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard';
+
     protected static UnitEnum|string|null $navigationGroup = 'Transaksi';
-    protected static ?string $navigationLabel = 'Transaksi Alat';
+
+    protected static ?string $navigationLabel = 'Transaksi Peminjaman';
 
     public static function form(Schema $schema): Schema
     {
@@ -56,8 +58,8 @@ class TransaksiAlatResource extends Resource
     {
         return [
             'index' => ListTransaksiAlats::route('/'),
-            'view'  => ViewTransaksiAlat::route('/{record}'),
-            'edit'  => EditTransaksiAlat::route('/{record}/edit'),
+            'view' => ViewTransaksiAlat::route('/{record}'),
+            'edit' => EditTransaksiAlat::route('/{record}/edit'),
         ];
     }
 }

@@ -104,6 +104,7 @@ class CartController extends Controller
                     'id'         => $unit->id,
                     'kode_alat'  => $unit->kode_alat,
                     'nama_alat'  => $unit->nama_alat,
+                    'satuan'     => $unit->satuan,
                     'harga_sewa' => $unit->harga_sewa,
                 ];
                 $added++;

@@ -192,6 +192,8 @@ class TransaksiAlatsTable
                                                 } elseif ($state === 'baik') {
                                                     $set('denda_rusak', 0);
                                                     $set('level_kerusakan', null);
+                                                } elseif ($state === 'rusak') {
+                                                    $set('denda_rusak', 0);
                                                 }
                                             }),
                                         Select::make('level_kerusakan')
@@ -199,13 +201,22 @@ class TransaksiAlatsTable
                                             ->options(AlatRusakLog::LEVEL_KERUSAKAN)
                                             ->visible(fn ($get) => $get('kondisi_kembali') === 'rusak')
                                             ->required(fn ($get) => $get('kondisi_kembali') === 'rusak')
+                                            ->live()
+                                            ->afterStateUpdated(function ($state, $set, $get) {
+                                                if ($state === 'rusak_berat') {
+                                                    $set('denda_rusak', (float) $get('harga_alat'));
+                                                } elseif ($state === 'rusak_sedang') {
+                                                    $set('denda_rusak', 0);
+                                                }
+                                            })
                                             ->dehydrated(),
                                         TextInput::make('denda_rusak')
                                             ->label('Denda Rusak/Hilang (Rp)')
                                             ->numeric()
                                             ->prefix('Rp')
                                             ->default(0)
-                                            ->disabled(fn ($get) => $get('kondisi_kembali') === 'hilang')
+                                            ->disabled(fn ($get) => $get('kondisi_kembali') === 'hilang'
+                                                || $get('level_kerusakan') === 'rusak_berat')
                                             ->dehydrated(),
                                         Textarea::make('keterangan')
                                             ->label('Catatan Kerusakan')
@@ -215,25 +226,36 @@ class TransaksiAlatsTable
                                             ->visible(fn ($get) => $get('kondisi_kembali') === 'rusak')
                                             ->required(fn ($get) => $get('kondisi_kembali') === 'rusak')
                                             ->dehydrated(),
-                                        FileUpload::make('foto_pembayaran')
-                                            ->label('Foto Bukti Pembayaran')
-                                            ->image()
-                                            ->disk('public')
-                                            ->directory('pengembalian-pembayaran')
-                                            ->acceptedFileTypes(['image/*'])
-                                            ->imageEditor()
-                                            ->columnSpanFull()
-                                            ->visible(fn ($get) => in_array($get('kondisi_kembali'), ['rusak', 'hilang'], true))
-                                            ->required(fn ($get) => $get('kondisi_kembali') === 'rusak' && (float) ($get('denda_rusak') ?? 0) > 0)
-                                            ->nullable(),
                                     ]),
                             ]),
+
+                        Section::make('Bukti Pembayaran Denda')
+                            ->schema([
+                                FileUpload::make('foto_pembayaran')
+                                    ->label('Foto Bukti Pembayaran')
+                                    ->helperText('Dipakai bersama untuk denda alat rusak dan hilang pada transaksi ini.')
+                                    ->image()
+                                    ->disk('public')
+                                    ->directory('pengembalian-pembayaran')
+                                    ->acceptedFileTypes(['image/*'])
+                                    ->imageEditor()
+                                    ->columnSpanFull()
+                                    ->visible(fn ($get) => collect($get('detail_items') ?? [])
+                                        ->contains(fn ($item) => in_array($item['kondisi_kembali'] ?? null, ['rusak', 'hilang'], true)))
+                                    ->required(fn ($get) => collect($get('detail_items') ?? [])
+                                        ->contains(fn ($item) => in_array($item['kondisi_kembali'] ?? null, ['rusak', 'hilang'], true)
+                                            && (float) ($item['denda_rusak'] ?? 0) > 0))
+                                    ->nullable(),
+                            ])
+                            ->visible(fn ($get) => collect($get('detail_items') ?? [])
+                                ->contains(fn ($item) => in_array($item['kondisi_kembali'] ?? null, ['rusak', 'hilang'], true))),
                     ])
                     ->action(function (TransaksiAlat $record, array $data) {
                         $hariTelat = $record->tanggal_kembali && $record->tanggal_kembali->isPast()
                             ? (int) $record->tanggal_kembali->diffInDays(now())
                             : 0;
                         $dendaTelat = $hariTelat * TransaksiAlat::DENDA_TELAT_PER_HARI;
+                        $fotoPembayaran = $data['foto_pembayaran'] ?? null;
                         $totalRusak = 0;
                         $totalHilang = 0;
 
@@ -263,7 +285,7 @@ class TransaksiAlatsTable
                                         'transaksi_id'     => $record->id,
                                         'denda'            => $dendaRusak,
                                         'keterangan'       => "Alat hilang saat pengembalian - Transaksi #{$record->id}",
-                                        'foto_pembayaran'  => $item['foto_pembayaran'] ?? null,
+                                        'foto_pembayaran'  => $fotoPembayaran,
                                     ]);
                                 } elseif ($item['kondisi_kembali'] === 'rusak') {
                                     $detail->alat->update(['status' => 'rusak']);
@@ -276,7 +298,7 @@ class TransaksiAlatsTable
                                         'level_kerusakan'       => $item['level_kerusakan'] ?? null,
                                         'denda'                => $dendaRusak,
                                         'keterangan'           => $item['keterangan'] ?? "Alat rusak saat pengembalian - Transaksi #{$record->id}",
-                                        'foto_pembayaran'      => $item['foto_pembayaran'] ?? null,
+                                        'foto_pembayaran'      => $fotoPembayaran,
                                     ]);
                                 } else {
                                     $detail->alat->update(['status' => 'tersedia']);

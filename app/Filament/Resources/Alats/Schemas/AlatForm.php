@@ -4,10 +4,10 @@ namespace App\Filament\Resources\Alats\Schemas;
 
 use App\Models\Alat;
 use App\Models\Bahan;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\FileUpload;
 
 class AlatForm
 {
@@ -25,7 +25,8 @@ class AlatForm
 
                         if ($last) {
                             $number = (int) substr($last, 2);
-                            return 'AL' . str_pad($number + 1, 3, '0', STR_PAD_LEFT);
+
+                            return 'AL'.str_pad($number + 1, 3, '0', STR_PAD_LEFT);
                         }
 
                         return 'AL001';
@@ -34,6 +35,20 @@ class AlatForm
                     ->dehydrated(),
                 TextInput::make('nama_alat')
                     ->label('Nama Alat')
+                    ->required(),
+                Select::make('satuan')
+                    ->label('Satuan Ukuran')
+                    ->options([
+                        'meter' => 'Meter',
+                        'centimeter' => 'Centimeter',
+                        'milimeter' => 'Milimeter',
+                        'liter' => 'Liter',
+                        'mililiter' => 'Mililiter',
+                        'kilogram' => 'Kilogram',
+                        'gram' => 'Gram',
+                    ])
+                    ->default('centimeter')
+                    ->searchable()
                     ->required(),
                 TextInput::make('ukuran')
                     ->label('Ukuran'),
@@ -57,9 +72,12 @@ class AlatForm
                     ->required()
                     ->numeric()
                     ->default(0),
-                FileUpload::make('image')
-                    ->label('Gambar')
+                FileUpload::make('images')
+                    ->label('Gambar Alat')
+                    ->helperText('Bisa upload lebih dari satu gambar. Gambar pertama akan dipakai sebagai gambar utama.')
                     ->image()
+                    ->multiple()
+                    ->reorderable()
                     ->disk('public')
                     ->visibility('public')
                     ->directory('alats')

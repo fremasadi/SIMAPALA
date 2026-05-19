@@ -25,9 +25,11 @@ Route::get('/', function () {
             return (object) [
                 'kode_alat'       => $first->kode_alat,
                 'nama_alat'       => $first->nama_alat,
+                'satuan'          => $first->satuan,
                 'ukuran'          => $first->ukuran,
                 'bahan'           => $first->bahan,
                 'image'           => $first->image,
+                'images'          => $first->images,
                 'harga_sewa'      => $first->harga_sewa,
                 'total_tersedia'  => $tersedia->count(),
                 'available_id'    => $tersedia->first()?->id,

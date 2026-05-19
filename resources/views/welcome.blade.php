@@ -263,15 +263,59 @@
 
             @if (isset($alats) && $alats->count() > 0)
                 <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    @foreach ($alats as $alat)
+                    @foreach ($alats->sortBy(fn ($alat) => $alat->status === 'tersedia' ? 0 : 1)->values() as $alat)
                         <div
                             class="bg-gradient-to-br from-white to-yellow-50 border-2 border-yellow-300 rounded-xl p-6 hover:shadow-xl transition hover:border-yellow-500 flex flex-col">
                             <!-- Image Section -->
                             <div class="mb-4 overflow-hidden rounded-lg border border-yellow-200 bg-yellow-100">
-                                @if ($alat->image)
-                                    <img src="{{ asset('storage/' . $alat->image) }}"
-                                        alt="{{ $alat->nama_alat }}"
-                                        class="h-44 w-full object-cover">
+                                @php
+                                    $alatImages = collect($alat->images ?? [])
+                                        ->filter()
+                                        ->when(empty($alat->images ?? []) && ! empty($alat->image), fn ($images) => $images->push($alat->image))
+                                        ->unique()
+                                        ->values();
+                                @endphp
+
+                                @if ($alatImages->isNotEmpty())
+                                    <div class="relative h-44 w-full" data-alat-slider>
+                                        <div class="h-44 w-full overflow-hidden">
+                                            <div class="flex h-full transition-transform duration-300 ease-out" data-slider-track>
+                                                @foreach ($alatImages as $image)
+                                                    <img src="{{ asset('storage/' . $image) }}"
+                                                        alt="{{ $alat->nama_alat }}"
+                                                        class="h-44 w-full flex-none object-cover">
+                                                @endforeach
+                                            </div>
+                                        </div>
+
+                                        @if ($alatImages->count() > 1)
+                                            <button type="button"
+                                                class="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow hover:bg-yellow-400 transition"
+                                                data-slider-prev
+                                                aria-label="Gambar sebelumnya">
+                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                </svg>
+                                            </button>
+                                            <button type="button"
+                                                class="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow hover:bg-yellow-400 transition"
+                                                data-slider-next
+                                                aria-label="Gambar berikutnya">
+                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </button>
+
+                                            <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5" data-slider-dots>
+                                                @foreach ($alatImages as $image)
+                                                    <button type="button"
+                                                        class="h-2 w-2 rounded-full bg-white/70 ring-1 ring-yellow-500/30 transition"
+                                                        data-slider-dot
+                                                        aria-label="Pilih gambar {{ $loop->iteration }}"></button>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
                                 @else
                                     <div class="h-44 w-full flex items-center justify-center bg-gradient-to-br from-yellow-100 to-yellow-200 text-yellow-700">
                                         <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -412,5 +456,51 @@
             @endguest
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('[data-alat-slider]').forEach(function (slider) {
+                const track = slider.querySelector('[data-slider-track]');
+                const slides = track ? Array.from(track.children) : [];
+                const previousButton = slider.querySelector('[data-slider-prev]');
+                const nextButton = slider.querySelector('[data-slider-next]');
+                const dots = Array.from(slider.querySelectorAll('[data-slider-dot]'));
+                let activeIndex = 0;
+
+                if (!track || slides.length <= 1) {
+                    return;
+                }
+
+                function updateSlider() {
+                    track.style.transform = `translateX(-${activeIndex * 100}%)`;
+
+                    dots.forEach(function (dot, index) {
+                        dot.classList.toggle('bg-yellow-400', index === activeIndex);
+                        dot.classList.toggle('bg-white/70', index !== activeIndex);
+                        dot.classList.toggle('w-5', index === activeIndex);
+                    });
+                }
+
+                previousButton?.addEventListener('click', function () {
+                    activeIndex = activeIndex === 0 ? slides.length - 1 : activeIndex - 1;
+                    updateSlider();
+                });
+
+                nextButton?.addEventListener('click', function () {
+                    activeIndex = activeIndex === slides.length - 1 ? 0 : activeIndex + 1;
+                    updateSlider();
+                });
+
+                dots.forEach(function (dot, index) {
+                    dot.addEventListener('click', function () {
+                        activeIndex = index;
+                        updateSlider();
+                    });
+                });
+
+                updateSlider();
+            });
+        });
+    </script>
 
 @endsection

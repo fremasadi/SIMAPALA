@@ -205,11 +205,16 @@
                             {{-- Checkout Payment Form --}}
                             <form action="{{ route('cart.checkout') }}" method="POST" enctype="multipart/form-data" id="checkoutForm">
                                 @csrf
-                                <input type="hidden" name="tanggal_pinjam" value="{{ $tanggal_pinjam }}">
-                                <input type="hidden" name="tanggal_kembali" value="{{ $tanggal_kembali }}">
-                                <input type="hidden" name="total_biaya" value="{{ $total_biaya }}">
+                                <input type="hidden" name="tanggal_pinjam" value="{{ old('tanggal_pinjam', $tanggal_pinjam) }}">
+                                <input type="hidden" name="tanggal_kembali" value="{{ old('tanggal_kembali', $tanggal_kembali) }}">
+                                <input type="hidden" name="total_biaya" value="{{ old('total_biaya', $total_biaya) }}">
 
                                 <div class="mb-4 space-y-4">
+                                    <div class="border-t-2 border-amber-200 pt-4">
+                                        <h4 class="text-base font-bold text-gray-800">Data Jaminan</h4>
+                                        <p class="mt-1 text-xs text-gray-600">Isi jaminan yang akan dititipkan saat mengambil alat.</p>
+                                    </div>
+
                                     <div>
                                         <label for="jenis_jaminan" class="block text-sm font-bold text-gray-700 mb-2">
                                             Jenis Jaminan
@@ -233,10 +238,10 @@
                                         <input type="file"
                                             name="foto_jaminan"
                                             id="foto_jaminan"
-                                            accept="image/*"
+                                            accept="image/jpeg,image/png,image/jpg,image/webp"
                                             class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition"
                                             required>
-                                        <p class="mt-1 text-xs text-gray-500">Format gambar, maksimal 2 MB.</p>
+                                        <p class="mt-1 text-xs text-gray-500">Format JPG, PNG, atau WebP. Maksimal 2 MB.</p>
                                         @error('foto_jaminan')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
