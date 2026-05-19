@@ -22,6 +22,7 @@ class InventarisResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static UnitEnum|string|null $navigationGroup = 'Data Master';
     protected static ?string $navigationLabel = 'Inventaris';
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {
