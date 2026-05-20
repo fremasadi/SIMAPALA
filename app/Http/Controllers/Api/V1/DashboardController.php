@@ -82,6 +82,29 @@ class DashboardController extends Controller
                 return $item;
             });
 
+        // Daftar alat yang sedang dipinjam (satu entry per unit alat)
+        $alatDipinjam = TransaksiAlat::where('user_id', $user->id)
+            ->where('status', 'dipinjam')
+            ->with('detailTransaksis.alat')
+            ->get()
+            ->flatMap(function ($transaksi) {
+                return $transaksi->detailTransaksis->map(function ($detail) use ($transaksi) {
+                    $end = $transaksi->tanggal_kembali ? Carbon::parse($transaksi->tanggal_kembali)->endOfDay() : null;
+                    $remaining = $end ? Carbon::now()->diffInSeconds($end, false) : null;
+
+                    return [
+                        'transaksi_id' => $transaksi->id,
+                        'detail_id' => $detail->id,
+                        'alat_id' => $detail->alat ? $detail->alat->id : $detail->alat_id,
+                        'nama_alat' => $detail->alat ? $detail->alat->nama_alat : null,
+                        'kode_alat' => $detail->alat ? $detail->alat->kode_alat : null,
+                        'tanggal_kembali' => $transaksi->tanggal_kembali,
+                        'ends_at' => $end ? $end->toDateTimeString() : null,
+                        'remaining_seconds' => $remaining,
+                    ];
+                });
+            })->values();
+
         return response()->json([
             'success' => true,
             'stats' => [
@@ -89,6 +112,7 @@ class DashboardController extends Controller
                 'saldo_kas' => $saldoKas,
                 'saldo_kas_formatted' => 'Rp ' . number_format($saldoKas, 0, ',', '.'),
             ],
+            'alat_dipinjam' => $alatDipinjam,
             'aktivitas' => $aktivitas,
         ]);
     }
