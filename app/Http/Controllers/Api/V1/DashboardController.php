@@ -89,8 +89,10 @@ class DashboardController extends Controller
             ->get()
             ->flatMap(function ($transaksi) {
                 return $transaksi->detailTransaksis->map(function ($detail) use ($transaksi) {
-                    $end = $transaksi->tanggal_kembali ? Carbon::parse($transaksi->tanggal_kembali)->endOfDay() : null;
-                    $remaining = $end ? Carbon::now()->diffInSeconds($end, false) : null;
+                    $end = $transaksi->tanggal_kembali?->copy()->endOfDay();
+                    $remainingSeconds = $end
+                        ? max(0, (int) floor(Carbon::now()->diffInSeconds($end, false)))
+                        : null;
 
                     return [
                         'transaksi_id' => $transaksi->id,
@@ -98,9 +100,10 @@ class DashboardController extends Controller
                         'alat_id' => $detail->alat ? $detail->alat->id : $detail->alat_id,
                         'nama_alat' => $detail->alat ? $detail->alat->nama_alat : null,
                         'kode_alat' => $detail->alat ? $detail->alat->kode_alat : null,
-                        'tanggal_kembali' => $transaksi->tanggal_kembali,
+                        'tanggal_kembali' => $transaksi->tanggal_kembali?->toDateString(),
                         'ends_at' => $end ? $end->toDateTimeString() : null,
-                        'remaining_seconds' => $remaining,
+                        'remaining_second' => $remainingSeconds,
+                        'remaining_seconds' => $remainingSeconds,
                     ];
                 });
             })->values();
