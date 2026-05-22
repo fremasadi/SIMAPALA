@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\KasBulanan;
 use App\Models\KasPembayaran;
 use App\Models\TransaksiAlat;
 use Carbon\Carbon;
@@ -22,11 +23,16 @@ class DashboardController extends Controller
             ->count();
 
         /**
-         * 💰 SALDO KAS (hanya diterima)
+         * 💰 SISA TAGIHAN KAS
          */
-        $saldoKas = KasPembayaran::where('user_id', $user->id)
+        $totalKasTagihan = KasBulanan::where('user_id', $user->id)
+            ->sum('nominal');
+
+        $totalKasDibayar = KasPembayaran::where('user_id', $user->id)
             ->where('status', 'diterima')
             ->sum('nominal');
+
+        $saldoKas = max(0, $totalKasTagihan - $totalKasDibayar);
 
         /**
          * 🕒 AKTIVITAS TERBARU (peminjaman alat + pembayaran kas)

@@ -17,6 +17,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\Action;
 
@@ -32,6 +33,13 @@ class TransaksiAlatsTable
                 TextColumn::make('user.role')->label('Peran Pemesan')->searchable()->sortable(),
                 // Jenis transaksi
                 TextColumn::make('jenis_transaksi')->label('Jenis')->sortable()->badge(),
+                TextColumn::make('jenis_jaminan')->label('Jenis Jaminan')->sortable()->searchable(),
+                ImageColumn::make('foto_jaminan')
+                    ->label('Foto Jaminan')
+                    ->disk('public')
+                    ->rounded()
+                    ->height(80)
+                    ->width(80),
 
                 // Tanggal Ajuan
                 TextColumn::make('tanggal_ajuan')->label('Tanggal Ajuan')->date()->sortable(),
@@ -151,11 +159,11 @@ class TransaksiAlatsTable
                             ->columns(2)
                             ->schema([
                                 TextInput::make('hari_telat')
-                                    ->label('Hari Telat')
+                                    ->label('Hari Terlambat')
                                     ->disabled()
                                     ->suffix('hari'),
                                 TextInput::make('total_denda_telat')
-                                    ->label('Total Denda Telat')
+                                    ->label('Total Denda Terlambat')
                                     ->disabled()
                                     ->prefix('Rp'),
                             ]),
