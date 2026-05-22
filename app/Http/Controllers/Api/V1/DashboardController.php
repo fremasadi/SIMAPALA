@@ -82,30 +82,17 @@ class DashboardController extends Controller
                 return $item;
             });
 
-        // Daftar alat yang sedang dipinjam (satu entry per unit alat)
+        // Daftar transaksi alat yang sedang dipinjam
         $alatDipinjam = TransaksiAlat::where('user_id', $user->id)
             ->where('status', 'dipinjam')
-            ->with('detailTransaksis.alat')
+            ->with(['detailTransaksis', 'pembayaran'])
             ->get()
-            ->flatMap(function ($transaksi) {
-                return $transaksi->detailTransaksis->map(function ($detail) use ($transaksi) {
-                    $end = $transaksi->tanggal_kembali?->copy()->endOfDay();
-                    $remainingSeconds = $end
-                        ? max(0, (int) floor(Carbon::now()->diffInSeconds($end, false)))
-                        : null;
-
-                    return [
-                        'transaksi_id' => $transaksi->id,
-                        'detail_id' => $detail->id,
-                        'alat_id' => $detail->alat ? $detail->alat->id : $detail->alat_id,
-                        'nama_alat' => $detail->alat ? $detail->alat->nama_alat : null,
-                        'kode_alat' => $detail->alat ? $detail->alat->kode_alat : null,
-                        'tanggal_kembali' => $transaksi->tanggal_kembali?->toDateString(),
-                        'ends_at' => $end ? $end->toDateTimeString() : null,
-                        'remaining_second' => $remainingSeconds,
-                        'remaining_seconds' => $remainingSeconds,
-                    ];
-                });
+            ->map(function ($transaksi) {
+                return [
+                    'nomor_transaksi' => $transaksi->pembayaran?->order_id ?? 'ORDER-' . $transaksi->id,
+                    'total_alat' => $transaksi->detailTransaksis->count(),
+                    'sisa_waktu' => $this->formatSisaWaktu($transaksi),
+                ];
             })->values();
 
         return response()->json([
@@ -118,5 +105,34 @@ class DashboardController extends Controller
             'alat_dipinjam' => $alatDipinjam,
             'aktivitas' => $aktivitas,
         ]);
+    }
+
+    private function formatSisaWaktu(TransaksiAlat $transaksi): ?string
+    {
+        if (! $transaksi->tanggal_kembali) {
+            return null;
+        }
+
+        $now = Carbon::now();
+        $end = $transaksi->tanggal_kembali->copy()->endOfDay();
+
+        if ($now->greaterThan($end)) {
+            return '0 hari';
+        }
+
+        $diff = $now->diff($end);
+        if ($diff->d > 0) {
+            return $diff->d . ' hari';
+        }
+
+        if ($diff->h > 0) {
+            return $diff->h . ' jam';
+        }
+
+        if ($diff->i > 0) {
+            return $diff->i . ' menit';
+        }
+
+        return 'kurang dari 1 menit';
     }
 }
