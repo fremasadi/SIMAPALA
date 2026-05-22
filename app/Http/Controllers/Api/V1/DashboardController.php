@@ -82,18 +82,28 @@ class DashboardController extends Controller
                 return $item;
             });
 
-        // Daftar transaksi alat yang sedang dipinjam
+        // Daftar transaksi alat yang sedang dipinjam (hanya alat dengan status dipinjam)
         $alatDipinjam = TransaksiAlat::where('user_id', $user->id)
             ->where('status', 'dipinjam')
-            ->with(['detailTransaksis', 'pembayaran'])
+            ->with(['detailTransaksis.alat', 'pembayaran'])
             ->get()
             ->map(function ($transaksi) {
+                // Filter detail transaksi untuk hanya alat yang statusnya 'dipinjam'
+                $detailAlatDipinjam = $transaksi->detailTransaksis->filter(function ($detail) {
+                    return $detail->alat && $detail->alat->status === 'dipinjam';
+                });
+
                 return [
                     'nomor_transaksi' => $transaksi->pembayaran?->order_id ?? 'ORDER-' . $transaksi->id,
-                    'total_alat' => $transaksi->detailTransaksis->count(),
+                    'total_alat' => $detailAlatDipinjam->count(),
                     'sisa_waktu' => $this->formatSisaWaktu($transaksi),
                 ];
-            })->values();
+            })
+            ->filter(function ($item) {
+                // Hanya tampilkan jika ada alat yang dipinjam
+                return $item['total_alat'] > 0;
+            })
+            ->values();
 
         return response()->json([
             'success' => true,
