@@ -103,6 +103,7 @@ class DashboardController extends Controller
                     'nomor_transaksi' => $transaksi->pembayaran?->order_id ?? 'ORDER-' . $transaksi->id,
                     'total_alat' => $detailAlatDipinjam->count(),
                     'sisa_waktu' => $this->formatSisaWaktu($transaksi),
+                    'remaining_seconds' => $this->getRemainingSeconds($transaksi),
                 ];
             })
             ->filter(function ($item) {
@@ -150,5 +151,21 @@ class DashboardController extends Controller
         }
 
         return 'kurang dari 1 menit';
+    }
+
+    private function getRemainingSeconds(TransaksiAlat $transaksi): ?int
+    {
+        if (! $transaksi->tanggal_kembali) {
+            return null;
+        }
+
+        $now = Carbon::now();
+        $end = $transaksi->tanggal_kembali->copy()->endOfDay();
+
+        if ($now->greaterThan($end)) {
+            return 0;
+        }
+
+        return (int) $now->diffInSeconds($end);
     }
 }

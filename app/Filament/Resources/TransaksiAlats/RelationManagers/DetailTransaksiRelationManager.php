@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class DetailTransaksiRelationManager extends RelationManager
 {
@@ -67,10 +68,23 @@ class DetailTransaksiRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with('transaksi'))
             ->columns([
                 TextColumn::make('alat.nama_alat')
                     ->label('Alat')
                     ->searchable(),
+
+                TextColumn::make('transaksi.jenis_jaminan')
+                    ->label('Jenis Jaminan')
+                    ->placeholder('-')
+                    ->searchable(),
+
+                ImageColumn::make('transaksi.foto_jaminan')
+                    ->label('Foto Jaminan')
+                    ->disk('public')
+                    ->height(60)
+                    ->width(60)
+                    ->square(),
 
                 TextColumn::make('kondisi_kembali')
                     ->label('Kondisi')
